@@ -9,8 +9,9 @@ const userSchema = new mongoose.Schema(
     gender: { type: String, enum: ["male", "female"] },
     role: { type: String, enum: ["admin", "user"], default: "user" },
     country: { type: String },
+    lastLogin: { type: Date, default: null },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const userModel = mongoose.model("UserModel", userSchema);

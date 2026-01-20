@@ -23,15 +23,16 @@ export const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = userModel({
+    const newUser = userModel.create({
       fullName,
       username,
       email,
       password: hashedPassword,
       role,
       country,
+      lastLogin: new Date(),
     });
-    generateTokenAndSetCookie(newUser._id, res);
+    const token = generateTokenAndSetCookie(newUser._id, res);
     if (newUser) {
       res.status(200).json({
         _id: newUser._id,
@@ -40,9 +41,9 @@ export const registerUser = async (req, res) => {
         message: "User registered succesfully",
         success: true,
         country: newUser.country,
+        token,
       });
     }
-    await newUser.save();
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: "Internal server error" });
@@ -51,31 +52,32 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await userModel.findOne({ email });
-    const isCorrectPassword = await bcrypt.compare(
-      password,
-      user.password || ""
-    );
 
-    if (!user || !isCorrectPassword) {
-      return res
-        .status(400)
-        .json({ error: "user not found or password incorrect" });
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    generateTokenAndSetCookie(user._id, res);
-    res.status(201).json({
+    const isCorrectPassword = await bcrypt.compare(password, user.password);
+    if (!isCorrectPassword) {
+      return res.status(400).json({ error: "Invalid credentials" });
+    }
+
+    const token = await generateTokenAndSetCookie(user._id, res);
+    user.lastLogin = new Date();
+    await user.save();
+
+    res.status(200).json({
       success: true,
-      username: user.username,
       email: user.email,
       role: user.role,
+      token, // ✅ REAL JWT STRING
     });
-    console.log("User logged in succesfully");
   } catch (error) {
-    console.log(error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 export const logoutUser = async (req, res) => {
   try {
     res.cookie("jwt", "", { maxAge: 0 });

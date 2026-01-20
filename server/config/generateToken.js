@@ -10,4 +10,5 @@ export const generateTokenAndSetCookie = async (userId, res) => {
     httpOnly: true,
     sameSite: "strict",
   });
+  return token;
 };

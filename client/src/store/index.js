@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import themeReducer from "./slices/themeSlice.js";
 import authReducer from "./slices/authSlice.js";
 import dashBoardReducer from "./slices/dashboardSlice.js";
+console.log("STORE CREATED by me");
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
     theme: themeReducer,
     auth: authReducer,
     dashboard: dashBoardReducer,
   },
 });
+
 export default store;

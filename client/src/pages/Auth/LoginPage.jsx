@@ -6,16 +6,19 @@ const LoginPage = () => {
   const loading = useSelector((state) => state.auth.loading);
 
   const handleLogin = () => {
+    console.log("Dispatching loginStart");
     dispatch(loginStart());
     setTimeout(() => {
+      console.log("Dispatching loginSuccess");
       dispatch(
         loginSuccess({
           user: { id: 1, name: "Joe" },
           token: "my token",
-        })
+        }),
       );
     }, 1000);
   };
+
   return (
     <div className="max-w-md mx-auto bg-white p-6 shadow">
       <h1 className="text-xl mb-4">Login</h1>

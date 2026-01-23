@@ -18,7 +18,13 @@ const RevenueChart = () => {
           <XAxis dataKey="month" />
           <YAxis />
           <Tooltip />
-          <Line dataKey="revenue" />
+          <Line
+            dataKey="revenue"
+            stroke="#7c3aed"
+            type="monotone"
+            dot={{ r: 4 }}
+            activeDot={{ r: 6 }}
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>

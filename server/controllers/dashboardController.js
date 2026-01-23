@@ -1,3 +1,4 @@
+import Subscription from "../models/Subscription.js";
 import Transaction from "../models/Transaction.js";
 import userModel from "../models/userModel.js";
 
@@ -81,15 +82,44 @@ export const getDashboardKPIs = async (req, res) => {
       .sort((a, b) => b.time - a.time)
       .slice(0, 5);
 
+    const planStats = await Subscription.aggregate([
+      {
+        $group: {
+          _id: "$plan",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const planBreakDown = planStats.map((item) => ({
+      name: item._id.charAt(0).toUpperCase() + item._id.slice(1),
+      value: item.count,
+    }));
+    const growth = await userModel.aggregate([
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          users: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+    const data = growth.map((item) => ({
+      month: months[item._id - 1],
+      users: item.users,
+    }));
     res.json({
       totalUsers,
       activeUsers,
       churnRate,
       mrr,
       revenueChart,
-      recentActivity, // ✅ send activity
+      recentActivity,
+      planBreakDown,
+      data,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Failed to fetch dashboard KPIs" });
   }
 };

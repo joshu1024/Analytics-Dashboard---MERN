@@ -3,8 +3,15 @@ import RecentActivityFeed from "../components/Activity/RecentActivityFeed";
 import PlanBreakdownChart from "../components/Charts/PlanBreakdownChart";
 import RevenueChart from "../components/Charts/RevenueChart";
 import UserGrowthChart from "../components/Charts/UserGrowthChart";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { fetchDashboardKPIs } from "../../store/slices/dashboardSlice";
 
 const DashboardPage = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    return fetchDashboardKPIs();
+  }, [dispatch]);
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">Dashboard Overview</h2>

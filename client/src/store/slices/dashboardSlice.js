@@ -32,6 +32,10 @@ const dashboardSlice = createSlice({
       activeUsers: 0,
       churnRate: 0,
       mrr: 0,
+      revenueChart: [],
+      recentActivity: [],
+      planBreakDown: [],
+      data: [],
     },
     loading: false,
     error: null,
@@ -47,6 +51,10 @@ const dashboardSlice = createSlice({
         console.log("KPI PAYLOAD:", action.payload);
         state.loading = false;
         state.kpis = action.payload;
+        state.revenueChart = action.payload.revenueChart;
+        state.recentActivity = action.payload.recentActivity;
+        state.planBreakDown = action.payload.planBreakDown;
+        state.data = action.payload.data;
       })
       .addCase(fetchDashboardKPIs.rejected, (state, action) => {
         state.loading = false;

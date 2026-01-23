@@ -16,7 +16,7 @@ const subscriptionSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["active", "trialing", "past_due", "cancelled"],
-      default: "trialling",
+      default: "trialing",
     },
     billingCycle: {
       type: String,

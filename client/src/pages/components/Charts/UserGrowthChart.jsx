@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import {
   BarChart,
   Bar,
@@ -6,14 +7,21 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  Cell,
 } from "recharts";
 
+const COLORS = [
+  "#8884d8",
+  "#82ca9d",
+  "#ffc658",
+  "#ff8042",
+  "#8dd1e1",
+  "#a4de6c",
+];
+
 const UserGrowthChart = () => {
-  const data = [
-    { month: "Jan", users: 267 },
-    { month: "Feb", users: 309 },
-    { month: "Mar", users: 379 },
-  ];
+  const { kpis, loading } = useSelector((state) => state.dashboard);
+  const data = kpis.data;
   return (
     <div className="bg-white  p-4 rounded shadow">
       <h3 className="">User Growth</h3>
@@ -22,7 +30,11 @@ const UserGrowthChart = () => {
           <XAxis dataKey="month" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="users" />
+          <Bar dataKey="users">
+            {data.map((entry, index) => (
+              <Cell key={index} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>

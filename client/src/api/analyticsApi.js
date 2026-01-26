@@ -23,6 +23,18 @@ export const fetchAnalyticsKPIsApi = async (token) => {
     error.response?.data?.message || "Failed to fetch kpi data";
   }
 };
+export const fetchUserDemographicsApi = async (token) => {
+  try {
+    const response = await api.get("/analytics/user-demographics", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    error.response?.data?.message || "Failed to fetch user demographics data";
+  }
+};
 export const fetchSignupsByCountryApi = async (token) => {
   try {
     const response = await api.get("/analytics/signup-bycountry", {

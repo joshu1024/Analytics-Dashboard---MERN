@@ -12,6 +12,7 @@ export const registerUser = async (req, res) => {
       confirmPassword,
       role,
       country,
+      gender,
     } = req.body;
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
@@ -31,6 +32,7 @@ export const registerUser = async (req, res) => {
       role,
       country,
       lastLogin: new Date(),
+      gender,
     });
     const token = generateTokenAndSetCookie(newUser._id, res);
     if (newUser) {
@@ -42,6 +44,7 @@ export const registerUser = async (req, res) => {
         success: true,
         country: newUser.country,
         token,
+        gender,
       });
     }
   } catch (error) {
@@ -71,7 +74,7 @@ export const loginUser = async (req, res) => {
       success: true,
       email: user.email,
       role: user.role,
-      token, // ✅ REAL JWT STRING
+      token,
     });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

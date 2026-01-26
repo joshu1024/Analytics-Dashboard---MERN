@@ -3,6 +3,7 @@ import {
   fetchAnalyticsKPIsApi,
   fetchRetentionCurveApi,
   fetchSignupsByCountryApi,
+  fetchUserDemographicsApi,
 } from "../../api/analyticsApi.js";
 
 export const fetchKPIs = createAsyncThunk(
@@ -33,6 +34,15 @@ export const fetchSignupsByCountry = createAsyncThunk(
     return await fetchSignupsByCountryApi(token);
   },
 );
+export const fetchUserDemographics = createAsyncThunk(
+  "analytics/fetchUserDemographics",
+  async (_, { getState, rejectWithValue }) => {
+    const token = getState().auth.token;
+    if (!token) return rejectWithValue();
+
+    return await fetchUserDemographicsApi(token);
+  },
+);
 const analyticsSlice = createSlice({
   name: "analytics",
   initialState: {
@@ -44,6 +54,7 @@ const analyticsSlice = createSlice({
     },
     data: [],
     data2: [],
+    demographics: [],
     loading: false,
     error: null,
   },
@@ -78,6 +89,17 @@ const analyticsSlice = createSlice({
         state.data2 = action.payload;
       })
       .addCase(fetchSignupsByCountry.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchUserDemographics.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUserDemographics.fulfilled, (state, action) => {
+        state.loading = false;
+        state.demographics = action.payload;
+      })
+      .addCase(fetchUserDemographics.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

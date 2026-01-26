@@ -63,3 +63,21 @@ export const getRetentionCurve = async (req, res) => {
 
   res.json(data.map((d) => ({ day: d._id, value: d.value })));
 };
+
+export const getUserDemographics = async (req, res) => {
+  try {
+    const result = await User.aggregate([
+      {
+        $group: { _id: "$gender", count: { $sum: 1 } },
+      },
+    ]);
+    const formatted = result.map((d) => ({
+      name: d._id || "Other",
+      value: d.count,
+    }));
+    res.json(formatted);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+    console.log(error.message);
+  }
+};

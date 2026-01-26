@@ -5,36 +5,40 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  Cell,
 } from "recharts";
-import { useEffect, useState } from "react";
-import api from "../../../api/api";
+import { useSelector } from "react-redux";
 
 const SignupsByCountryMap = () => {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    api
-      .get("/analytics/signup-bycountry")
-      .then((res) =>
-        setData(res.data.map((d) => ({ country: d._id, count: d.count })))
-      );
-  }, []);
-  /*   useEffect(() => {
-    api.get("/analytics/signup-bycountry").then((res) => {
-      console.log(res.data);
-    });
-  }, []); */
+  const { data2 = [], loading } = useSelector((state) => state.analytics);
+  if (loading) return <p>Loading signups by country data...</p>;
+  const info = data2
+    .map((d) => ({ country: d._id, count: d.count }))
+    .sort((a, b) => b.count - a.count);
+  const COLORS = [
+    "#8884d8",
+    "#82ca9d",
+    "#ffc658",
+    "#ff8042",
+    "#8dd1e1",
+    "#a4de6c",
+    "#893F45",
+  ];
 
   return (
     <div className="bg-white p-4 rounded shadow mb-6">
       <h3 className="font-semibold mb-2">Signups by Country</h3>
 
       <ResponsiveContainer width="100%" height={250}>
-        <BarChart data={data}>
+        <BarChart data={info}>
           <XAxis dataKey="country" />
-          <YAxis />
+          <YAxis domain={[0, 10]} allowDecimals={false} tickCount={6} />
           <Tooltip />
-          <Bar dataKey="count" />
+          <Bar dataKey="count" isAnimationActive={false} barSize={40}>
+            {COLORS.map((entry, index) => (
+              <Cell key={index} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>

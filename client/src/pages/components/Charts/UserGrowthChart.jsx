@@ -17,6 +17,7 @@ const COLORS = [
   "#ff8042",
   "#8dd1e1",
   "#a4de6c",
+  "#893F45",
 ];
 
 const UserGrowthChart = () => {

@@ -8,11 +8,12 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import api from "../../../api/api.js";
+import { useSelector } from "react-redux";
 const RetentionCurveChart = () => {
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    api.get("/analytics/retention").then((res) => setData(res.data));
-  }, []);
+  const { data = [], loading } = useSelector((state) => state.analytics);
+
+  if (loading) return <p>Loading retention data...</p>;
+
   return (
     <div className="bg-white p-4 shadow rounded mb-6">
       <h3 className="font-semibold mb-2">RetentionCurve</h3>
@@ -22,7 +23,7 @@ const RetentionCurveChart = () => {
           <XAxis dataKey="day" />
           <YAxis />
           <Tooltip />
-          <Line dataKey="value" type="monotone" />
+          <Line dataKey="value" type="monotone" fill="#A020F0" />
         </LineChart>
       </ResponsiveContainer>
     </div>

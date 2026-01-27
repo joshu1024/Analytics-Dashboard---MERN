@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   fetchAnalyticsKPIsApi,
+  fetchEventsApi,
   fetchRetentionCurveApi,
   fetchSignupsByCountryApi,
   fetchUserDemographicsApi,
@@ -43,6 +44,15 @@ export const fetchUserDemographics = createAsyncThunk(
     return await fetchUserDemographicsApi(token);
   },
 );
+export const fetchEvents = createAsyncThunk(
+  "analytics/fetchEvents",
+  async (_, { getState, rejectWithValue }) => {
+    const token = getState().auth.token;
+    if (!token) return rejectWithValue();
+
+    return await fetchEventsApi(token);
+  },
+);
 const analyticsSlice = createSlice({
   name: "analytics",
   initialState: {
@@ -55,6 +65,7 @@ const analyticsSlice = createSlice({
     data: [],
     data2: [],
     demographics: [],
+    events: [],
     loading: false,
     error: null,
   },
@@ -102,9 +113,18 @@ const analyticsSlice = createSlice({
       .addCase(fetchUserDemographics.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(fetchEvents.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchEvents.fulfilled, (state, action) => {
+        state.loading = false;
+        state.events = action.payload;
+      })
+      .addCase(fetchEvents.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
-// fetchSignupsByCountry;
-// fetchRetentionCurve;
 export default analyticsSlice.reducer;

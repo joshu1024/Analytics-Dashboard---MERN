@@ -1,4 +1,5 @@
 import { generateTokenAndSetCookie } from "../config/generateToken.js";
+import Event from "../models/Event.js";
 import userModel from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 
@@ -34,7 +35,12 @@ export const registerUser = async (req, res) => {
       lastLogin: new Date(),
       gender,
     });
+
     const token = generateTokenAndSetCookie(newUser._id, res);
+    await Event.create({
+      type: "User Registration",
+      user: newUser._id,
+    });
     if (newUser) {
       res.status(200).json({
         _id: newUser._id,
@@ -69,6 +75,10 @@ export const loginUser = async (req, res) => {
     const token = await generateTokenAndSetCookie(user._id, res);
     user.lastLogin = new Date();
     await user.save();
+    await Event.create({
+      type: "USER_LOGIN",
+      user: user._id, // 👈 ensures populate works
+    });
 
     res.status(200).json({
       success: true,

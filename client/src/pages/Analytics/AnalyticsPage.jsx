@@ -10,6 +10,7 @@ import {
   fetchRetentionCurve,
   fetchSignupsByCountry,
   fetchUserDemographics,
+  fetchEvents,
 } from "../../store/slices/analyticsSlice.js";
 
 const AnalyticsPage = () => {
@@ -19,6 +20,7 @@ const AnalyticsPage = () => {
     dispatch(fetchRetentionCurve());
     dispatch(fetchSignupsByCountry());
     dispatch(fetchUserDemographics());
+    dispatch(fetchEvents());
   }, [dispatch]);
   return (
     <>

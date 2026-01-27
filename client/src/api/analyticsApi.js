@@ -47,3 +47,16 @@ export const fetchSignupsByCountryApi = async (token) => {
     error.response?.data?.message || "Failed to fetch signup-bycountry data";
   }
 };
+
+export const fetchEventsApi = async (token) => {
+  try {
+    const response = await api.get("/analytics/events", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    error.response?.data?.message || "Failed to fetch recent events data";
+  }
+};

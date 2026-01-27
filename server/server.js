@@ -5,6 +5,7 @@ import connectToDB from "./config/connectToDB.js";
 import authRoutes from "./routes/authRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
+import companyRoutes from "./routes/companyRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -15,6 +16,7 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/companies", companyRoutes);
 
 app.get("/", (req, res) => {
   res.send("The server is working");

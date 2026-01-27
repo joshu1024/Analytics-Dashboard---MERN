@@ -1,15 +1,16 @@
 import mongoose from "mongoose";
 const companySchema = new mongoose.Schema(
   {
-    name: { type: String },
-    industry: { type: String },
+    name: { type: String, required: true },
+    industry: { type: String, default: "General" },
     status: {
       type: String,
-      enum: ["Active", "Pendig", "Suspended"],
+      enum: ["Active", "Pending", "Inactive"],
       default: "Pending",
     },
+    plan: { type: String, default: "Basic" },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 const Company = mongoose.model("Company", companySchema);
 export default Company;

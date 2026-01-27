@@ -50,11 +50,15 @@ export const fetchSignupsByCountryApi = async (token) => {
 
 export const fetchEventsApi = async (token) => {
   try {
-    const response = await api.get("/analytics/events", {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const response = await api.get(
+      "/analytics/events",
+      { params: { type: "USER_LOGIN" } },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
+    );
     return response.data;
   } catch (error) {
     error.response?.data?.message || "Failed to fetch recent events data";

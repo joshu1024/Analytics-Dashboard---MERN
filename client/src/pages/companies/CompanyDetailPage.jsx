@@ -13,7 +13,7 @@ const CompanyDetailPage = ({ company }) => {
   return (
     <div className="space-y-2">
       <CompanyInfoCard company={company} />
-      <CompanyUsersList companyId={company._id} />
+      <CompanyUsersList companyId={company.id} />
     </div>
   );
 };

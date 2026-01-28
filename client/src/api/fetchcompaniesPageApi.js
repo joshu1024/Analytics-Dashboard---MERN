@@ -1,7 +1,7 @@
 import api from "./api";
-export const fetchcompaniesPageApi = async (token) => {
+export const fetchcompaniesPageApi = async (token, page = 1) => {
   try {
-    const response = await api.get("/companies", {
+    const response = await api.get(`/companies?page=${page}&limit=5`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;

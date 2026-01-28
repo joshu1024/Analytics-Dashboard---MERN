@@ -1,8 +1,15 @@
 import Company from "../models/Company.js";
 export const getCompanies = async (req, res) => {
   try {
-    const companies = await Company.find();
-    res.json(companies);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const total = await Company.countDocuments();
+    const companies = await Company.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+    res.json({ companies, page, total, totalPages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }

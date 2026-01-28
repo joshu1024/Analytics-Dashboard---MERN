@@ -6,6 +6,7 @@ import CompanyDetailPage from "./CompanyDetailPage";
 
 const CompaniesPage = () => {
   const dispatch = useDispatch();
+  const [selectedCompany, setSelectedCompany] = React.useState(null);
 
   useEffect(() => {
     dispatch(companiesPage());
@@ -16,11 +17,17 @@ const CompaniesPage = () => {
       <h2 className="text-xl font-semibold mb-4">Companies</h2>
 
       <div className="bg-white p-4 rounded shadow">
-        <CompanyTable className="cursor-pointer" />
+        <CompanyTable
+          className="cursor-pointer"
+          onSelectedCompany={setSelectedCompany}
+        />
       </div>
 
       <div className="mt-4">
-        <CompanyDetailPage className="cursor-pointer" />
+        <CompanyDetailPage
+          className="cursor-pointer"
+          company={selectedCompany}
+        />
       </div>
     </div>
   );

@@ -14,6 +14,12 @@ const billingSlice = createSlice({
   name: "billing",
   initialState: {
     monthlyRevenue: 0,
+    subcriptions: {
+      active: 0,
+      cancelled: 0,
+      trialing: 0,
+    },
+    recentTransactions: [],
     loading: false,
     error: null,
   },
@@ -26,6 +32,8 @@ const billingSlice = createSlice({
       .addCase(billingPage.fulfilled, (state, action) => {
         ((state.loading = false),
           (state.monthlyRevenue = action.payload.monthlyRevenue));
+        state.subcriptions = action.payload.subcriptions;
+        state.recentTransactions = action.payload.recentTransactions;
       })
       .addCase(billingPage.rejected, (state, action) => {
         ((state.loading = false), (state.error = action.payload));

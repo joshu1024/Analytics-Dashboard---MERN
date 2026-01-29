@@ -1,10 +1,16 @@
 import React from "react";
+import { useSelector } from "react-redux";
 const transactions = [
   { id: 1, user: "Joe", amount: "$200", status: "paid" },
   { id: 2, user: "Kip", amount: "$300", status: "failed" },
 ];
 
 const TransactionTable = () => {
+  const {
+    recentTransactions = [],
+    loading,
+    error,
+  } = useSelector((state) => state.billing);
   return (
     <div>
       <h3 className="font-semibold mb-2">Transactions</h3>
@@ -14,12 +20,13 @@ const TransactionTable = () => {
             <th className="text-left">User</th>
             <th>Amount</th>
             <th>Status</th>
+            <th>Country</th>
           </tr>
         </thead>
         <tbody>
-          {transactions.map((t) => (
-            <tr id={t.id} className="border-t">
-              <td>{t.user}</td>
+          {recentTransactions.map((t) => (
+            <tr key={t._id} className="border-b ">
+              <td>{t.user?.fullName}</td>
               <td>{t.amount}</td>
               <td>{t.status}</td>
             </tr>

@@ -1,16 +1,16 @@
 import React from "react";
-const plans = ["Free", "Pro", "Enterprise"];
-const PlanSelect = () => {
+
+const PlanSelect = ({ plan }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {plans.map((plan) => (
-        <div key={plan} className="bg-white rounded shadow p-2">
-          <h3 className="font-semibold">{plan}</h3>
-          <button className="mt-4 bg-slate-900 px-4 py-2 text-white rounded">
-            Close
-          </button>
-        </div>
-      ))}
+    <div className="bg-white rounded shadow p-4 ">
+      <h3 className="text-lg font-semibold capitalize">{plan._id}</h3>
+      <p className="text-2xl font-bold">
+        ${plan.price}
+        <span className="text-sm text-gray-500">/{plan.billingCycle}</span>
+      </p>
+      <button className="bg-black text-white w-full rounded py-2 cursor-pointer">
+        Choose Plan
+      </button>
     </div>
   );
 };

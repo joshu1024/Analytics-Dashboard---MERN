@@ -3,12 +3,12 @@ import { useSelector } from "react-redux";
 import { ResponsiveContainer, Pie, PieChart, Tooltip, Cell } from "recharts";
 
 const SubscriptionChart = () => {
-  const { subcriptions, loading, error } = useSelector(
+  const { subscriptions, loading, error } = useSelector(
     (state) => state.billing,
   );
   if (loading) return <div>Loading..</div>;
   if (error) return <div className="text-red-500">Error</div>;
-  const data = Object.entries(subcriptions).map(([status, count]) => ({
+  const data = Object.entries(subscriptions).map(([status, count]) => ({
     name: status,
     value: count,
   }));

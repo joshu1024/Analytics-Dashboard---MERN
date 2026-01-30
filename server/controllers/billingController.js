@@ -25,13 +25,13 @@ export const getBillingOverview = async (req, res) => {
     },
   ]);
 
-  const subcriptions = {
+  const subscriptions = {
     active: 0,
     cancelled: 0,
     trialing: 0,
   };
   subscriptionStats.forEach((s) => {
-    subcriptions[s._id] = s.count;
+    subscriptions[s._id] = s.count;
   });
 
   const recentTransactions = await Transaction.find()
@@ -39,5 +39,26 @@ export const getBillingOverview = async (req, res) => {
     .limit(5)
     .populate("user", "fullName email");
 
-  res.status(200).json({ subcriptions, monthlyRevenue, recentTransactions });
+  const plans = await Subscription.aggregate([
+    { $sort: { price: 1 } },
+    {
+      $group: {
+        _id: "$plan",
+        price: { $first: "$price" },
+        billingCycle: { $first: "$billingCycle" },
+      },
+    },
+  ]);
+
+  const failedPayments = await Transaction.find({ status: "failed" })
+    .sort({ createdAt: -1 })
+    .populate("user", "fullName email");
+
+  res.status(200).json({
+    subscriptions,
+    monthlyRevenue,
+    recentTransactions,
+    plans,
+    failedPayments,
+  });
 };

@@ -14,20 +14,19 @@ const TransactionTable = () => {
   return (
     <div>
       <h3 className="font-semibold mb-2">Transactions</h3>
-      <table className="w-full text-sm">
-        <thead>
+      <table className="w-full text-sm mb-2">
+        <thead className="text-left">
           <tr>
-            <th className="text-left">User</th>
-            <th>Amount</th>
+            <th>User</th>
+            <th className="text-left">Amount</th>
             <th>Status</th>
-            <th>Country</th>
           </tr>
         </thead>
         <tbody>
           {recentTransactions.map((t) => (
-            <tr key={t._id} className="border-b ">
+            <tr key={t._id} className="border-b text-left">
               <td>{t.user?.fullName}</td>
-              <td>{t.amount}</td>
+              <td>${t.amount}</td>
               <td>{t.status}</td>
             </tr>
           ))}

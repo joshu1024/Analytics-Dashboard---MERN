@@ -1,8 +1,8 @@
 import React from "react";
 
 const UserRow = ({ user }) => (
-  <tr>
-    <td>{user.name}</td>
+  <tr className="text-left">
+    <td>{user.fullName}</td>
     <td>{user.email}</td>
     <td>{user.role}</td>
   </tr>

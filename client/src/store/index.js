@@ -5,6 +5,7 @@ import dashBoardReducer from "./slices/dashboardSlice.js";
 import analyticsReducer from "./slices/analyticsSlice.js";
 import companiesReducer from "./slices/companiesSlice.js";
 import billingReducer from "./slices/billingSlice.js";
+import userReducer from "./slices/userSlice.js";
 console.log("STORE CREATED by me");
 
 const store = configureStore({
@@ -15,6 +16,7 @@ const store = configureStore({
     analytics: analyticsReducer,
     companies: companiesReducer,
     billing: billingReducer,
+    user: userReducer,
   },
 });
 

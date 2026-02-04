@@ -1,4 +1,4 @@
-import mongoose, { Types } from "mongoose";
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
     role: { type: String, enum: ["admin", "user"], default: "user" },
     country: { type: String },
     lastLogin: { type: Date, default: null },
+    isActive: { type: Boolean, default: true },
   },
   { timestamps: true },
 );

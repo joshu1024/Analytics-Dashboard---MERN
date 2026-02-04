@@ -7,14 +7,16 @@ const CompanyTable = ({ onSelectedCompany }) => {
     (state) => state.companies,
   );
 
-  if (loading) return <p>Loading companies...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
   function handlePageChange(newPage) {
     dispatch(companiesPage(newPage));
   }
 
   return (
-    <div>
+    <div className="relative">
+      {loading && (
+        <div className="absolute top-20 right-100 text-5xl rounded-full border-4 border-gray-400 w-20 h-20 animate-spin border-t-0"></div>
+      )}
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b">

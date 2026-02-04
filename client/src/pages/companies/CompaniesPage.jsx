@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { companiesPage } from "../../store/slices/companiesSlice";
 import CompanyTable from "./components/CompanyTable";
@@ -6,7 +6,7 @@ import CompanyDetailPage from "./CompanyDetailPage";
 
 const CompaniesPage = () => {
   const dispatch = useDispatch();
-  const [selectedCompany, setSelectedCompany] = React.useState(null);
+  const [selectedCompany, setSelectedCompany] = useState(null);
 
   useEffect(() => {
     dispatch(companiesPage());

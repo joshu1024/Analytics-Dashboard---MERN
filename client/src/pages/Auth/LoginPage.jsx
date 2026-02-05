@@ -1,34 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginStart, loginSuccess } from "../../store/slices/authSlice";
+import { authStart, authSuccess, authFail } from "../../store/slices/authSlice";
+import { loginApi } from "../../api/authApi";
+import { useNavigate } from "react-router-dom";
+
 const LoginPage = () => {
   const dispatch = useDispatch();
-  const loading = useSelector((state) => state.auth.loading);
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    console.log("Dispatching loginStart");
-    dispatch(loginStart());
-    setTimeout(() => {
-      console.log("Dispatching loginSuccess");
+  const { loading, error } = useSelector((state) => state.auth);
+
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      dispatch(authStart());
+
+      const data = await loginApi(form);
+
       dispatch(
-        loginSuccess({
-          user: { id: 1, name: "Joe" },
-          token: "my token",
+        authSuccess({
+          user: {
+            fullName: data.fullName,
+            email: data.email,
+            role: data.role,
+          },
+          token: data.token,
         }),
       );
-    }, 1000);
+
+      navigate("/");
+    } catch (err) {
+      dispatch(authFail(err));
+    }
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 shadow">
-      <h1 className="text-xl mb-4">Login</h1>
-      <button
-        onClick={handleLogin}
-        disabled={loading}
-        className="w-full bg-gray-600 text-white py-2 rounded"
-      >
-        {loading ? "Logging in" : "Login"}
-      </button>
+    <div className="max-w-md mx-auto bg-white p-6 rounded shadow">
+      <h2 className="text-xl font-semibold mb-4">Login</h2>
+
+      {error && <p className="text-red-500 mb-2">{error}</p>}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="email"
+          placeholder="Email"
+          className="border p-2 rounded w-full"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          className="border p-2 rounded w-full"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+        />
+
+        <button
+          disabled={loading}
+          className="bg-slate-900 text-white py-2 w-full rounded"
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
     </div>
   );
 };

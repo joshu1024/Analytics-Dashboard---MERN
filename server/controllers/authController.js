@@ -25,7 +25,7 @@ export const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = userModel.create({
+    const newUser = await userModel.create({
       fullName,
       username,
       email,
@@ -36,7 +36,7 @@ export const registerUser = async (req, res) => {
       gender,
     });
 
-    const token = generateTokenAndSetCookie(newUser._id, res);
+    const token = generateTokenAndSetCookie(newUser, res);
     await Event.create({
       type: "User Registration",
       user: newUser._id,
@@ -72,12 +72,12 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    const token = await generateTokenAndSetCookie(user._id, res);
+    const token = generateTokenAndSetCookie(user, res);
     user.lastLogin = new Date();
     await user.save();
     await Event.create({
       type: "USER_LOGIN",
-      user: user._id, // 👈 ensures populate works
+      user: user._id,
     });
 
     res.status(200).json({
@@ -85,6 +85,7 @@ export const loginUser = async (req, res) => {
       email: user.email,
       role: user.role,
       token,
+      fullName: user.fullName,
     });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

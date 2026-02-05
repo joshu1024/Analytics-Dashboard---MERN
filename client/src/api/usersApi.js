@@ -1,7 +1,7 @@
 import api from "../api/api.js";
 export const fetchUserApi = async (token, page = 1) => {
   try {
-    const response = await api.get(`/user?page=${page}&limit=10`, {
+    const response = await api.get(`/user?page=${page}&limit=5`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;

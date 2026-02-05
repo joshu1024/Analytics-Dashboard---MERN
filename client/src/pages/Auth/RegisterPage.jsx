@@ -1,34 +1,139 @@
 import React, { useState } from "react";
+import { registerApi } from "../../api/authApi.js";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  authStart,
+  authSuccess,
+  authFail,
+} from "../../store/slices/authSlice.js";
 
 const RegisterPage = () => {
-  const [form, setForm] = useState("");
-  const handleSubmit = (e) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.auth);
+
+  const [form, setForm] = useState({
+    fullName: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "",
+    country: "",
+    gender: "",
+  });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("register", form);
+    try {
+      dispatch(authStart());
+      const data = await registerApi(form);
+      dispatch(
+        authSuccess({
+          user: {
+            fullName: data.fullName,
+            username: data.username,
+            email: data.email,
+            role: data.role,
+            country: data.country,
+            gender: data.gender,
+          },
+          token: data.token,
+        }),
+      );
+      navigate("/login");
+    } catch (error) {
+      dispatch(authFail(error));
+    }
   };
+
   return (
-    <div className="max-w-md mx-auto bg-white p-6 rounded shadow ">
+    <div className="max-w-md mx-auto bg-white p-6 rounded shadow">
       <h3 className="text-xl font-semibold mb-4">Register</h3>
+      {error && <div className="text-red-500">{error}</div>}
+
       <form className="space-y-4" onSubmit={handleSubmit}>
         <input
           type="text"
+          value={form.fullName}
+          placeholder="Full Name"
+          onChange={(e) => setForm({ ...form, fullName: e.target.value })}
           className="border p-2 rounded w-full"
-          placeholder="Enter your name"
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+        />
+        <input
+          type="text"
+          value={form.username}
+          placeholder="Username"
+          onChange={(e) => setForm({ ...form, username: e.target.value })}
+          className="border p-2 rounded w-full"
         />
         <input
           type="email"
-          className="border p-2 rounded w-full"
-          placeholder="Enter your email address"
+          value={form.email}
+          placeholder="Email"
           onChange={(e) => setForm({ ...form, email: e.target.value })}
+          className="border p-2 rounded w-full"
         />
         <input
           type="password"
+          value={form.password}
+          placeholder="Password"
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
           className="border p-2 rounded w-full"
-          onChange={(e) => setForm({ ...password, name: e.target.value })}
         />
-        <button className="bg-slate-900 text-white py-2 w-full rounded">
-          Register
+        <input
+          type="password"
+          value={form.confirmPassword}
+          placeholder="Confirm Password"
+          onChange={(e) =>
+            setForm({ ...form, confirmPassword: e.target.value })
+          }
+          className="border p-2 rounded w-full"
+        />
+        <input
+          type="text"
+          value={form.role}
+          placeholder="Role"
+          onChange={(e) => setForm({ ...form, role: e.target.value })}
+          className="border p-2 rounded w-full"
+        />
+        <input
+          type="text"
+          value={form.country}
+          placeholder="Country"
+          onChange={(e) => setForm({ ...form, country: e.target.value })}
+          className="border p-2 rounded w-full"
+        />
+        <div className="flex space-x-4">
+          <label className="flex items-center space-x-1">
+            <input
+              type="radio"
+              name="gender"
+              value="male"
+              checked={form.gender === "male"}
+              onChange={(e) => setForm({ ...form, gender: e.target.value })}
+            />
+            <span>Male</span>
+          </label>
+
+          <label className="flex items-center space-x-1">
+            <input
+              type="radio"
+              name="gender"
+              value="female"
+              checked={form.gender === "female"}
+              onChange={(e) => setForm({ ...form, gender: e.target.value })}
+            />
+            <span>Female</span>
+          </label>
+        </div>
+
+        <button
+          disabled={loading}
+          className="bg-slate-900 text-white py-2 w-full rounded"
+        >
+          {loading ? "Registering..." : "Register"}
         </button>
       </form>
     </div>

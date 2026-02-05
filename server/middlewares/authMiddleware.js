@@ -4,14 +4,15 @@ export const protect = async (req, res, next) => {
   try {
     // Extract token
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader?.startsWith("Bearer ")) {
       return res.status(401).json({ error: "Unauthorized" }); // return stops execution
     }
 
     const token = authHeader.split(" ")[1];
 
     // Verify token
-    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
 
     next(); // proceed to next middleware
   } catch (error) {

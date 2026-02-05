@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { registerApi } from "../../api/authApi.js";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   authStart,
@@ -128,10 +128,15 @@ const RegisterPage = () => {
             <span>Female</span>
           </label>
         </div>
-
+        <NavLink
+          to={"/login"}
+          className="flex text-sm cursor-pointer underline text-blue-800 text-left"
+        >
+          Already have an account? Login
+        </NavLink>
         <button
           disabled={loading}
-          className="bg-slate-900 text-white py-2 w-full rounded"
+          className="bg-slate-900 text-white py-2 w-full rounded mt-2"
         >
           {loading ? "Registering..." : "Register"}
         </button>

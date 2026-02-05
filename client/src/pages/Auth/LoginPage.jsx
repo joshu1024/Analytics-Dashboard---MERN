@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authStart, authSuccess, authFail } from "../../store/slices/authSlice";
 import { loginApi } from "../../api/authApi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -62,10 +62,15 @@ const LoginPage = () => {
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
         />
-
+        <NavLink
+          to={"/register"}
+          className="flex text-sm cursor-pointer underline text-blue-800 text-left "
+        >
+          Dont have an account? Register
+        </NavLink>
         <button
           disabled={loading}
-          className="bg-slate-900 text-white py-2 w-full rounded"
+          className="bg-slate-900 text-white py-2 w-full rounded mt-2"
         >
           {loading ? "Logging in..." : "Login"}
         </button>

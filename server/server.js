@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: [
-      "https://analytics-dashboard-mern-production.up.railway.app/api",
+      "https://dashboard-mern-tau.vercel.app", // your Vercel frontend
       "http://localhost:5173",
     ],
   }),

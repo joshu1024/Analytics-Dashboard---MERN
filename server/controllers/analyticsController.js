@@ -41,28 +41,25 @@ export const getSignupsByCountry = async (req, res) => {
 };
 
 export const getRetentionCurve = async (req, res) => {
-  const data = await User.aggregate([
-    {
-      $project: {
-        day: {
-          $floor: {
-            $divide: [
-              { $subtract: ["$$NOW", "$createdAt"] },
-              1000 * 60 * 60 * 24,
-            ],
-          },
-        },
-      },
-    },
-    {
-      $group: { _id: "$day", value: { $sum: 1 } },
-    },
-    { $match: { _id: { $gte: 0 } } },
-    { $sort: { _id: 1 } },
-    { $limit: 30 },
-  ]);
+  const retention = [];
 
-  res.json(data.map((d) => ({ day: d._id, value: d.value })));
+  const totalUsers = await User.countDocuments();
+  if (!totalUsers) return res.json([]);
+
+  for (let day = 0; day <= 30; day++) {
+    const cutoff = new Date(Date.now() - day * 24 * 60 * 60 * 1000);
+
+    const activeUsers = await User.countDocuments({
+      lastLogin: { $gte: cutoff },
+    });
+
+    retention.push({
+      day,
+      value: Math.round((activeUsers / totalUsers) * 100),
+    });
+  }
+
+  res.json(retention);
 };
 
 export const getUserDemographics = async (req, res) => {

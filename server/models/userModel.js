@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema(
     country: { type: String },
     lastLogin: { type: Date, default: null },
     isActive: { type: Boolean, default: true },
+    resetPasswordToken: String,
+    resetPasswordTime: Date,
   },
   { timestamps: true },
 );

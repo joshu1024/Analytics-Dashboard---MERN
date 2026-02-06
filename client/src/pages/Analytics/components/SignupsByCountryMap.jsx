@@ -8,6 +8,7 @@ import {
   Cell,
 } from "recharts";
 import { useSelector } from "react-redux";
+import { LabelList } from "recharts";
 
 const SignupsByCountryMap = () => {
   const { data2 = [], loading } = useSelector((state) => state.analytics);
@@ -32,10 +33,16 @@ const SignupsByCountryMap = () => {
       <ResponsiveContainer width="100%" height={250}>
         <BarChart data={info}>
           <XAxis dataKey="country" />
-          <YAxis domain={[0, 10]} allowDecimals={false} tickCount={6} />
+          <YAxis
+            allowDecimals={false}
+            tickCount={10}
+            domain={[0, (dataMax) => dataMax + 1]}
+          />
+
           <Tooltip />
-          <Bar dataKey="count" isAnimationActive={false} barSize={40}>
-            {COLORS.map((entry, index) => (
+          <Bar dataKey="count" barSize={24}>
+            <LabelList dataKey="count" position="top" />
+            {info.map((_, index) => (
               <Cell key={index} fill={COLORS[index % COLORS.length]} />
             ))}
           </Bar>

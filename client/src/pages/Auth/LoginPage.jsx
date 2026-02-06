@@ -62,12 +62,22 @@ const LoginPage = () => {
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
         />
-        <NavLink
-          to={"/register"}
-          className="flex text-sm cursor-pointer underline text-blue-800 text-left "
-        >
-          Dont have an account? Register
-        </NavLink>
+        <div className="flex justify-between mx-2">
+          {" "}
+          <NavLink
+            to={"/register"}
+            className="flex text-sm cursor-pointer underline text-blue-800 text-left "
+          >
+            Dont have an account? Register
+          </NavLink>
+          <NavLink
+            to={"/forgot-password"}
+            className="flex text-sm cursor-pointer underline text-blue-800 text-left "
+          >
+            Forgot password ?
+          </NavLink>
+        </div>
+
         <button
           disabled={loading}
           className="bg-slate-900 text-white py-2 w-full rounded mt-2"

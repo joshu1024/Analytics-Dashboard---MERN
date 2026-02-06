@@ -1,22 +1,47 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
+import { resetPassword } from "../../store/slices/authSlice.js";
 
 const ResetPasswordPage = () => {
+  const { token } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error, message } = useSelector((s) => s.auth);
+
   const [password, setPassword] = useState("");
-  const handleReset = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Rset password", password);
+    const result = await dispatch(resetPassword({ token, password }));
+
+    if (resetPassword.fulfilled.match(result)) {
+      navigate("/login");
+    }
   };
+
   return (
-    <div className="max-w-md mx-auto bg-white rounded shadow">
+    <div className="max-w-md mx-auto bg-white rounded shadow p-6">
       <h3 className="text-xl mb-4 font-semibold">Reset Password</h3>
-      <form className="space-y-2" onSubmit={(e) => setPassword(e.target.value)}>
+
+      {message && <p className="text-green-600">{message}</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="password"
           className="border py-2 w-full rounded"
           placeholder="New Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
         />
-        <button className="bg-slate-900 text-white py-2 w-full rounded">
-          Reset password
+
+        <button
+          disabled={loading}
+          className="bg-slate-900 text-white py-2 w-full rounded"
+        >
+          {loading ? "Resetting..." : "Reset password"}
         </button>
       </form>
     </div>

@@ -14,17 +14,21 @@ const RecentActivityFeed = () => {
 
     let diff = Math.floor((now - past) / 1000);
 
-    // ✅ handle future dates
+    // handle future dates
     if (diff < 0) diff = Math.abs(diff);
 
     const minutes = Math.floor(diff / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(days / 365);
 
     if (diff < 60) return `${diff}s ago`;
     if (minutes < 60) return `${minutes}m ago`;
     if (hours < 24) return `${hours}h ago`;
-    return `${days}d ago`;
+    if (days < 30) return `${days}d ago`;
+    if (months < 12) return `${months}mo ago`;
+    return `${years}y ago`;
   };
 
   return (

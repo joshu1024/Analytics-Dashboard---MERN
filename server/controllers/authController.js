@@ -2,6 +2,7 @@ import { generateTokenAndSetCookie } from "../config/generateToken.js";
 import Event from "../models/Event.js";
 import userModel from "../models/userModel.js";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 export const registerUser = async (req, res) => {
   try {
@@ -101,3 +102,26 @@ export const logoutUser = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      res.status(404).json({ error: "user not found" });
+    }
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordTime = new Date() + 15 * 60 * 1000;
+    user.save();
+
+    const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+    // TODO: send email (nodemailer)
+    console.log("RESET LINK:", resetLink);
+    res.json({ message: "reset link sent to email" });
+  } catch (error) {}
+};
+export const resetPassword = async (req, res) => {};

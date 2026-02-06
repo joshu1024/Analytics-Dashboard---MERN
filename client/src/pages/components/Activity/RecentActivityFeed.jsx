@@ -1,9 +1,10 @@
 import { useSelector } from "react-redux";
 
 const RecentActivityFeed = () => {
-  const { recentActivity = [], loading } = useSelector(
-    (state) => state.dashboard,
-  );
+  const { recentActivity, loading } = useSelector((state) => ({
+    recentActivity: state.dashboard.kpis.recentActivity,
+    loading: state.dashboard.loading,
+  }));
 
   if (loading) return <p>Loading...</p>;
   const timeAgo = (date) => {

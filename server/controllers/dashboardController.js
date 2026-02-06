@@ -75,7 +75,7 @@ export const getDashboardKPIs = async (req, res) => {
       })),
       ...recentUsers.map((u) => ({
         type: "user",
-        message: `New user registered: ${u.name || u.email}`,
+        message: `New user registered: ${u.fullName || u.email}`,
         time: u.createdAt,
       })),
     ]

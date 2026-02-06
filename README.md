@@ -183,8 +183,19 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 
 📸 Screenshots
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/62454ae7-2b33-4a38-9bb4-55837c7faa0a" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0ea69242-ae87-43cf-8a3e-93810595fca0" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d754d3ab-ad74-4444-a543-85de7eed50c9" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fad3ac0f-42fe-4ee4-a1e9-6f95fee7f98c" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e9bb78c9-aad2-4f0f-bb55-2e1dd0020bba" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9ce29958-d01e-40d2-848a-bc188ebae816" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/dd706bab-9141-41c4-ae37-67e6df231e47" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/603fe3f5-9d3a-44ba-94de-3fdea3ff4305" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f22c5924-9c51-43a6-96df-fa2266c2edeb" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/68178614-f493-43d3-b04f-b4620a842596" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/96d4ea73-b275-467f-a6b7-1b9dd682821a" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/01039a56-5cfc-4da3-8755-1082ad2bad0b" />
 
-Add screenshots or GIFs of the dashboard UI, analytics charts, and tables.
 
 🧠 Future Enhancements
 

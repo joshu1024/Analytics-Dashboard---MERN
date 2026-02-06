@@ -15,7 +15,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://dashboard-mern-tau.vercel.app/", "http://localhost:5173"],
+  }),
+);
 app.use("/api/auth", authRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/dashboard", dashboardRoutes);

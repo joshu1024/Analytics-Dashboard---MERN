@@ -7,8 +7,6 @@ The application focuses on data aggregation, visualization, predictable state ma
 🌍 Live Demo
 👉 https://dashboard-mern-tau.vercel.app/
 
-💼 Why This Project Matters (For Employers)
-
 This project showcases my ability to:
 
 Build scalable dashboards used by businesses and SaaS products

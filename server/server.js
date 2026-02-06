@@ -17,7 +17,10 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: ["https://dashboard-mern-tau.vercel.app/", "http://localhost:5173"],
+    origin: [
+      "https://analytics-dashboard-mern-production.up.railway.app/api",
+      "http://localhost:5173",
+    ],
   }),
 );
 app.use("/api/auth", authRoutes);

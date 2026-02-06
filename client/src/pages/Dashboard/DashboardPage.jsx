@@ -12,6 +12,8 @@ const DashboardPage = () => {
   useEffect(() => {
     return fetchDashboardKPIs();
   }, [dispatch]);
+  console.log(import.meta.env.VITE_API_URL);
+
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">Dashboard Overview</h2>

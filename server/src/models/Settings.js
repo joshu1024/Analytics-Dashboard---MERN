@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
-const SettingsSchema = await mongoose.Schema(
+const SettingsSchema = new mongoose.Schema(
   {
     companyName: String,
     smtp: {
@@ -19,4 +19,5 @@ const SettingsSchema = await mongoose.Schema(
   { timestamps: true },
 );
 
-export default mongoose.model("Setings", SettingsSchema);
+const Setings = mongoose.model("Setings", SettingsSchema);
+module.exports = Setings;

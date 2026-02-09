@@ -1,10 +1,11 @@
-import express from "express";
-import {
+const express = require("express");
+
+const {
   getCompanies,
   createCompany,
-} from "../controllers/companyController.js";
+} = require("../controllers/companyController");
 
 const router = express.Router();
 router.get("/", getCompanies);
 router.post("/", createCompany);
-export default router;
+module.exports = router;

@@ -1,6 +1,6 @@
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 
-export const generateTokenAndSetCookie = (user, res) => {
+const generateTokenAndSetCookie = (user, res) => {
   const token = jwt.sign(
     {
       id: user._id,
@@ -20,3 +20,5 @@ export const generateTokenAndSetCookie = (user, res) => {
 
   return token;
 };
+
+module.exports = { generateTokenAndSetCookie };

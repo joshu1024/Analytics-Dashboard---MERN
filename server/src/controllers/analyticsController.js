@@ -1,8 +1,8 @@
-import Transaction from "../models/Transaction.js";
-import User from "../models/userModel.js";
-import Event from "../models/Event.js";
+const Transaction = require("../models/Transaction");
+const User = require("../models/userModel");
+const Event = require("../models/Event");
 
-export const getKPIs = async (req, res) => {
+const getKPIs = async (req, res) => {
   try {
     const totalUsers = await User.countDocuments();
 
@@ -33,14 +33,14 @@ export const getKPIs = async (req, res) => {
   }
 };
 
-export const getSignupsByCountry = async (req, res) => {
+const getSignupsByCountry = async (req, res) => {
   const data2 = await User.aggregate([
     { $group: { _id: "$country", count: { $sum: 1 } } },
   ]);
   res.json(data2);
 };
 
-export const getRetentionCurve = async (req, res) => {
+const getRetentionCurve = async (req, res) => {
   const retention = [];
 
   const totalUsers = await User.countDocuments();
@@ -62,7 +62,7 @@ export const getRetentionCurve = async (req, res) => {
   res.json(retention);
 };
 
-export const getUserDemographics = async (req, res) => {
+const getUserDemographics = async (req, res) => {
   try {
     const result = await User.aggregate([
       {
@@ -80,7 +80,7 @@ export const getUserDemographics = async (req, res) => {
   }
 };
 
-export const getRecentEvents = async (req, res) => {
+const getRecentEvents = async (req, res) => {
   try {
     const { type } = req.query;
     const page = Number(req.query.page || 1);
@@ -104,5 +104,10 @@ export const getRecentEvents = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch recent events" });
   }
 };
-
-//PAGINATION LATER
+module.exports = {
+  getKPIs,
+  getSignupsByCountry,
+  getRetentionCurve,
+  getUserDemographics,
+  getRecentEvents,
+};

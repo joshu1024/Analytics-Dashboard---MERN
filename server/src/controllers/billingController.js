@@ -1,7 +1,7 @@
-import Transaction from "../models/Transaction.js";
-import Subscription from "../models/Subscription.js";
+const Transaction = require("../models/Transaction");
+const Subscription = require("../models/Subscription");
 
-export const getBillingOverview = async (req, res) => {
+const getBillingOverview = async (req, res) => {
   const startOfMonth = new Date(
     new Date().getFullYear(),
     new Date().getMonth(),
@@ -61,4 +61,7 @@ export const getBillingOverview = async (req, res) => {
     plans,
     failedPayments,
   });
+};
+module.exports = {
+  getBillingOverview,
 };

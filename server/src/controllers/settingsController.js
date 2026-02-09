@@ -1,6 +1,6 @@
-import Settings from "../models/Settings.js";
+const Settings = require("../models/Settings");
 
-export const getSettings = async (req, res) => {
+const getSettings = async (req, res) => {
   let settings = await Settings.findOne();
 
   if (!settings) {
@@ -10,7 +10,7 @@ export const getSettings = async (req, res) => {
   res.json({ settings });
 };
 
-export const updateGeneralSettings = async (req, res) => {
+const updateGeneralSettings = async (req, res) => {
   console.log("BODY:", req.body);
 
   const { companyName } = req.body;
@@ -23,7 +23,7 @@ export const updateGeneralSettings = async (req, res) => {
 
   res.json({ settings });
 };
-export const updateSMTP = async (req, res) => {
+const updateSMTP = async (req, res) => {
   const { host } = req.body;
   const settings = await Settings.findOneAndUpdate(
     {},
@@ -32,7 +32,7 @@ export const updateSMTP = async (req, res) => {
   );
   res.json(settings);
 };
-export const updateBranding = async (req, res) => {
+const updateBranding = async (req, res) => {
   const { companyName } = req.body;
 
   const settings = await Settings.findOneAndUpdate(
@@ -44,7 +44,7 @@ export const updateBranding = async (req, res) => {
   res.json(settings);
 };
 
-export const generateApiKey = async (req, res) => {
+const generateApiKey = async (req, res) => {
   const rawKey = crypto.randomBytes(32).toString("hex");
   const hash = crypto.createHash("sha256").update(rawKey).digest("hex");
 
@@ -55,4 +55,12 @@ export const generateApiKey = async (req, res) => {
   );
 
   res.json({ apiKey: rawKey });
+};
+
+module.exports = {
+  getSettings,
+  updateGeneralSettings,
+  updateSMTP,
+  updateBranding,
+  generateApiKey,
 };

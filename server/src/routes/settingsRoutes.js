@@ -1,11 +1,12 @@
-import express from "express";
-import {
+const express = require("express");
+
+const {
   getSettings,
   updateGeneralSettings,
   updateSMTP,
   updateBranding,
   generateApiKey,
-} from "../controllers/settingsController.js";
+} = require("../controllers/settingsController");
 
 const router = express.Router();
 
@@ -15,4 +16,4 @@ router.put("/smtp", updateSMTP);
 router.put("/branding", updateBranding);
 router.post("/api-keys", generateApiKey);
 
-export default router;
+module.exports = router;

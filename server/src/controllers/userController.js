@@ -1,6 +1,6 @@
-import userModel from "../models/userModel.js";
+const userModel = require("../models/userModel");
 
-export const getUsers = async (req, res) => {
+const getUsers = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
   const skip = (page - 1) * limit;
@@ -14,7 +14,7 @@ export const getUsers = async (req, res) => {
   res.json({ users, page, total, totalPages: Math.ceil(total / limit) });
 };
 
-export const updateUserRole = async (req, res) => {
+const updateUserRole = async (req, res) => {
   const { role } = req.body;
   const user = await userModel.findById(req.params.id);
   if (!user) {
@@ -24,7 +24,7 @@ export const updateUserRole = async (req, res) => {
   user.save();
   res.json(user);
 };
-export const toggleUserStatus = async (req, res) => {
+const toggleUserStatus = async (req, res) => {
   const user = await userModel.findById(req.params.id);
   if (!user) {
     return res.status(404).json({ error: "User not found" });
@@ -32,4 +32,10 @@ export const toggleUserStatus = async (req, res) => {
   user.isActive = !user.isActive;
   await user.save();
   res.json(user);
+};
+
+module.exports = {
+  getUsers,
+  updateUserRole,
+  toggleUserStatus,
 };

@@ -1,5 +1,5 @@
-import Company from "../models/Company.js";
-export const getCompanies = async (req, res) => {
+const Company = require("../models/Company");
+const getCompanies = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -14,11 +14,15 @@ export const getCompanies = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-export const createCompany = async (req, res) => {
+const createCompany = async (req, res) => {
   try {
     const company = await Company.create(req.body);
     res.status(201).json(company);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
+};
+module.exports = {
+  getCompanies,
+  createCompany,
 };

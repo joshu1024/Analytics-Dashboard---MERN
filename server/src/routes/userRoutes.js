@@ -1,9 +1,10 @@
-import express from "express";
-import {
+const express = require("express");
+
+const {
   getUsers,
   updateUserRole,
   toggleUserStatus,
-} from "../controllers/userController.js";
+} = require("../controllers/userController");
 
 const router = express.Router();
 
@@ -11,4 +12,4 @@ router.get("/", getUsers);
 router.patch("/:id/role", updateUserRole);
 router.patch("/:id/status", toggleUserStatus);
 
-export default router;
+module.exports = router;

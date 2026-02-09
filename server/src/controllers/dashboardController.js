@@ -1,8 +1,8 @@
-import Subscription from "../models/Subscription.js";
-import Transaction from "../models/Transaction.js";
-import userModel from "../models/userModel.js";
+const Subscription = require("../models/Subscription");
+const Transaction = require("../models/Transaction");
+const userModel = require("../models/userModel");
 
-export const getDashboardKPIs = async (req, res) => {
+const getDashboardKPIs = async (req, res) => {
   try {
     const totalUsers = await userModel.countDocuments();
 
@@ -122,4 +122,7 @@ export const getDashboardKPIs = async (req, res) => {
     console.log(error);
     res.status(500).json({ message: "Failed to fetch dashboard KPIs" });
   }
+};
+module.exports = {
+  getDashboardKPIs,
 };

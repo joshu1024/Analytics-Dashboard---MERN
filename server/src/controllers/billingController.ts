@@ -1,5 +1,6 @@
-const Transaction = require("../models/Transaction");
-const Subscription = require("../models/Subscription");
+import Transaction from "../models/Transaction"
+import Subscription from "../models/Subscription"
+
 
 const getBillingOverview = async (req, res) => {
   const startOfMonth = new Date(

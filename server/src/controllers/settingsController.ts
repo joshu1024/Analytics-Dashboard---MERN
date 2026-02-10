@@ -1,4 +1,5 @@
-const Settings = require("../models/Settings");
+import Settings from "../models/Settings"
+import crypto from "crypto"
 
 const getSettings = async (req, res) => {
   let settings = await Settings.findOne();

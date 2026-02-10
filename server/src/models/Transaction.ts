@@ -1,6 +1,21 @@
-const mongoose = require("mongoose");
+import mongoose, { Schema, Document, Types } from "mongoose";
+import { IUsermodel } from "./userModel";
 
-const transactionSchema = new mongoose.Schema(
+export interface ITransaction extends Document{
+user:Types.ObjectId | IUsermodel,
+subscription?:Types.ObjectId,
+amount:number,
+currency:string,
+status:"success" | "failed"| "pending" | "refunded",
+paymentMethod:"card"| "mpesa" | "paypal"| "bank",
+provider:"stripe" | "paypal" | "mpesa" | "manual",
+providerTransactionId?:string,
+failureReason?:string,
+createdAt?:Date,
+updatedAt?:Date
+}
+
+const transactionSchema = new Schema<ITransaction>(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -42,5 +57,5 @@ const transactionSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-export const Transaction = mongoose.model("Transaction", transactionSchema);
-module.exports = Transaction;
+const Transaction = mongoose.model<ITransaction>("Transaction", transactionSchema);
+export default Transaction;

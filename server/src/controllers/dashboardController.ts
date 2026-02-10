@@ -1,6 +1,6 @@
-const Subscription = require("../models/Subscription");
-const Transaction = require("../models/Transaction");
-const userModel = require("../models/userModel");
+import Subscription from  "../models/Subscription"
+import Transaction from  "../models/Transaction"
+import userModel from  "../models/userModel"
 
 const getDashboardKPIs = async (req, res) => {
   try {
@@ -68,18 +68,30 @@ const getDashboardKPIs = async (req, res) => {
     const recentUsers = await userModel.find().sort({ createdAt: -1 }).limit(5);
 
     const recentActivity = [
-      ...recentTransactions.map((t) => ({
-        type: "transaction",
-        message: `Payment of ${t.amount} ${t.currency} by ${t.user?.name || "User"}`,
-        time: t.createdAt,
-      })),
+     ...recentTransactions.map((t) => {
+  let userName = "User";
+
+  // Narrow the type
+  if (typeof t.user === "object" && "fullName" in t.user) {
+    userName = t.user.fullName;
+  }
+
+  return {
+    type: "transaction",
+    message: `Payment of ${t.amount} ${t.currency} by ${userName}`,
+    time: t.createdAt,
+  };
+}),
       ...recentUsers.map((u) => ({
         type: "user",
         message: `New user registered: ${u.fullName || u.email}`,
         time: u.createdAt,
       })),
     ]
-      .sort((a, b) => b.time - a.time)
+     .sort(
+  (a, b) =>
+    (b.time?.getTime() ?? 0) - (a.time?.getTime() ?? 0))
+
       .slice(0, 5);
 
     const planStats = await Subscription.aggregate([

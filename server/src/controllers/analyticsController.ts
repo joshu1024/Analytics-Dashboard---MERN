@@ -1,6 +1,6 @@
-const Transaction = require("../models/Transaction");
-const User = require("../models/userModel");
-const Event = require("../models/Event");
+import Transaction from"../models/Transaction";
+import User from"../models/userModel";
+import Event from"../models/Event";
 
 const getKPIs = async (req, res) => {
   try {

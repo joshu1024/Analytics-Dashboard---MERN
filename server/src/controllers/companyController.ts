@@ -1,4 +1,4 @@
-const Company = require("../models/Company");
+import Company from "../models/Company"
 const getCompanies = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;

@@ -1,6 +1,22 @@
-const mongoose = require("mongoose");
+import mongoose,{Schema,Document,Types}  from "mongoose"
 
-const subscriptionSchema = new mongoose.Schema(
+export interface ISubscription extends Document{
+  user:Types.ObjectId,
+  plan:"free"| "basic"| "pro"| "enterprise",
+  status: "active" | "trialing" | "past_due" | "cancelled",
+  billingCycle: "monthly" | "yearly",
+  price:number,
+  currency:string,
+  startDate?:Date,
+  endDate?:Date,
+  cancelAtPeriodEnd:boolean
+  provider: "paypal" | "stripe" | "manual",
+  providerSubscriptionId?:string
+  createdAt?:Date,
+  updatedAt?:Date
+}
+
+const subscriptionSchema = new Schema<ISubscription>(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -38,5 +54,5 @@ const subscriptionSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export const Subscription = mongoose.model("Subscription", subscriptionSchema);
-module.exports = Subscription;
+const Subscription = mongoose.model<ISubscription>("Subscription", subscriptionSchema);
+export default Subscription;

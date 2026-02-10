@@ -1,8 +1,8 @@
-const { generateTokenAndSetCookie } = require("../config/generateToken");
-const Event = require("../models/Event.js");
-const userModel = require("../models/userModel");
-const bcrypt = require("bcryptjs");
-const crypto = require("crypto");
+import  { generateTokenAndSetCookie } from"../config/generateToken"
+import  Event from"../models/Event.js"
+import  userModel from"../models/userModel"
+import  bcrypt from"bcryptjs"
+import  crypto from"crypto"
 
 const registerUser = async (req, res) => {
   try {
@@ -98,7 +98,7 @@ const logoutUser = async (req, res) => {
     res.cookie("jwt", "", { maxAge: 0 });
     res.status(200).json({ message: "Logged out succesfully" });
   } catch (error) {
-    console.log("error in logout controller".error.message);
+    console.log("error in logout controller",error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -115,7 +115,8 @@ const forgotPassword = async (req, res) => {
       .update(resetToken)
       .digest("hex");
     user.resetPasswordToken = hashedToken;
-    user.resetPasswordTime = new Date() + 15 * 60 * 1000;
+ user.resetPasswordTime = new Date(Date.now() + 15 * 60 * 1000);
+
     user.save();
 
     const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;

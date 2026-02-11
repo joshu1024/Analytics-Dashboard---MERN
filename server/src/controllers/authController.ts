@@ -1,5 +1,5 @@
 import  { generateTokenAndSetCookie } from"../config/generateToken"
-import  Event from"../models/Event.js"
+import  Event from"../models/Event"
 import  userModel from"../models/userModel"
 import  bcrypt from"bcryptjs"
 import  crypto from"crypto"

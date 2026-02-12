@@ -1,28 +1,40 @@
-import Company from "../models/Company"
-const getCompanies = async (req, res) => {
+import Company, { ICompany } from "../models/Company"
+import { Request,Response } from "express";
+interface CreateCompanyBody{
+  name: string;
+  industry?: string;
+  status?: "Active" | "Pending" | "Inactive";
+  plan?:string;
+}
+interface CompanyQuery{
+  page?:string,
+  limit?:string
+}
+export const getCompanies = async (req:Request<{},{},{},CompanyQuery>, res:Response):Promise<void> => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) ?? 1;
+    const limit = parseInt(req.query.limit) ?? 10;
     const skip = (page - 1) * limit;
     const total = await Company.countDocuments();
-    const companies = await Company.find()
+    const companies:ICompany[] = await Company.find()
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
     res.json({ companies, page, total, totalPages: Math.ceil(total / limit) });
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    return
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Failed to fetch recent events"
+     res.status(500).json({ message });
   }
 };
-const createCompany = async (req, res) => {
+export const createCompany = async (req:Request<{},ICompany,CreateCompanyBody>, res:Response):Promise<void> => {
   try {
     const company = await Company.create(req.body);
     res.status(201).json(company);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    return
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Failed to fetch recent events"
+     res.status(500).json({ message });
   }
 };
-module.exports = {
-  getCompanies,
-  createCompany,
-};
+

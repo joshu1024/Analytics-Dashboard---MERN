@@ -3,8 +3,26 @@ import  Event from"../models/Event"
 import  userModel from"../models/userModel"
 import  bcrypt from"bcryptjs"
 import  crypto from"crypto"
+import { Request,Response } from "express";
 
-const registerUser = async (req, res) => {
+interface RegisterBody{
+      fullName:string,
+      username:string,
+      email:string,
+      password:string,
+      confirmPassword:string,
+      role?:string,
+      country?:string,
+      gender?:string,
+}
+interface LoginBody{
+  email:string,
+  password:string
+}
+interface ForgotPassword{
+  email:string
+}
+export const registerUser = async (req:Request<{},{},RegisterBody>, res:Response):Promise<void> => {
   try {
     const {
       fullName,
@@ -18,10 +36,12 @@ const registerUser = async (req, res) => {
     } = req.body;
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ error: "User already exists" });
+       res.status(400).json({ error: "User already exists" });
+       return
     }
     if (password !== confirmPassword) {
-      return res.status(400).json({ error: "both passwords must match" });
+       res.status(400).json({ error: "both passwords must match" });
+       return
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -54,23 +74,25 @@ const registerUser = async (req, res) => {
         gender,
       });
     }
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ error: "Internal server error" });
+  } catch (err:unknown) {
+    const message = err instanceof Error ? err.message : "Internal server error"
+    res.status(500).json({ message});
   }
 };
-const loginUser = async (req, res) => {
+export const loginUser = async (req:Request<{},{},LoginBody>, res:Response):Promise<void> => {
   try {
     const { email, password } = req.body;
 
     const user = await userModel.findOne({ email });
     if (!user) {
-      return res.status(400).json({ error: "Invalid credentials" });
+       res.status(400).json({ error: "Invalid credentials" });
+       return
     }
 
     const isCorrectPassword = await bcrypt.compare(password, user.password);
     if (!isCorrectPassword) {
-      return res.status(400).json({ error: "Invalid credentials" });
+       res.status(400).json({ error: "Invalid credentials" });
+       return
     }
 
     const token = generateTokenAndSetCookie(user, res);
@@ -88,21 +110,23 @@ const loginUser = async (req, res) => {
       token,
       fullName: user.fullName,
     });
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+  } catch (err:unknown) {
+    const message = err instanceof Error ? err.message : "Internal server error"
+    res.status(500).json({ message});
   }
 };
 
-const logoutUser = async (req, res) => {
+export const logoutUser = async (req:Request, res:Response):Promise<void> => {
   try {
     res.cookie("jwt", "", { maxAge: 0 });
     res.status(200).json({ message: "Logged out succesfully" });
-  } catch (error) {
-    console.log("error in logout controller",error.message);
-    res.status(500).json({ error: "Internal server error" });
+    return;
+  }catch (err:unknown) {
+    const message = err instanceof Error ? err.message : "Internal server error"
+    res.status(500).json({ message});
   }
 };
-const forgotPassword = async (req, res) => {
+export const forgotPassword = async (req:Request<{},{},ForgotPassword>, res:Response):Promise<void> => {
   try {
     const { email } = req.body;
     const user = await userModel.findOne({ email });
@@ -115,22 +139,19 @@ const forgotPassword = async (req, res) => {
       .update(resetToken)
       .digest("hex");
     user.resetPasswordToken = hashedToken;
- user.resetPasswordTime = new Date(Date.now() + 15 * 60 * 1000);
-
-    user.save();
+     user.resetPasswordTime = new Date(Date.now() + 15 * 60 * 1000);
+     await user.save();
 
     const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
     // TODO: send email (nodemailer)
     console.log("RESET LINK:", resetLink);
     res.json({ message: "reset link sent to email" });
-  } catch (error) {}
+    return
+  } catch (err:unknown) {
+    const message = err instanceof Error ? err.message : "Internal server error"
+    res.status(500).json({ message});
+  }
 };
-const resetPassword = async (req, res) => {};
+export const resetPassword = async (req:Request, res:Response):Promise<void> => {};
 
-module.exports = {
-  registerUser,
-  loginUser,
-  logoutUser,
-  forgotPassword,
-  resetPassword,
-};
+

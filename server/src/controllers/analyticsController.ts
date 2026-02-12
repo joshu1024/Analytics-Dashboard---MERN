@@ -1,7 +1,7 @@
 import { Request,Response } from "express";
 import Transaction from"../models/Transaction";
 import User from"../models/userModel";
-import Event, { IEvent } from"../models/Event";
+import Event from"../models/Event";
 
 
 export const getKPIs = async (req:Request, res:Response):Promise<void> => {

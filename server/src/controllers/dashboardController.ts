@@ -1,8 +1,30 @@
 import Subscription from  "../models/Subscription"
-import Transaction from  "../models/Transaction"
+import Transaction,{ITransaction} from  "../models/Transaction"
 import userModel from  "../models/userModel"
+import { Request,Response } from "express";
 
-const getDashboardKPIs = async (req, res) => {
+interface revenueAgg{
+  _id:null,
+  total:number
+}
+interface monthlyRevenueAgg{
+  _id:number,
+  totalRevenue:number
+}
+interface planAgg{
+  _id:string,
+  count:number
+}
+interface UsergrowthAgg{
+   _id: number,
+   users: number,
+}
+interface RecentActivity {
+  type: "transaction" | "user";
+  message: string;
+  time?: Date;
+}
+export const getDashboardKPIs = async (req:Request, res:Response) => {
   try {
     const totalUsers = await userModel.countDocuments();
 
@@ -21,7 +43,7 @@ const getDashboardKPIs = async (req, res) => {
         : Number(((inactiveUsers / totalUsers) * 100).toFixed(2));
 
     // ✅ Total Revenue
-    const revenue = await Transaction.aggregate([
+    const revenue = await Transaction.aggregate<revenueAgg>([
       { $match: { status: "success" } },
       { $group: { _id: null, total: { $sum: { $toDouble: "$amount" } } } },
     ]);
@@ -29,7 +51,7 @@ const getDashboardKPIs = async (req, res) => {
     const mrr = revenue[0]?.total || 0;
 
     // ✅ Monthly Revenue Chart
-    const monthlyRevenue = await Transaction.aggregate([
+    const monthlyRevenue = await Transaction.aggregate<monthlyRevenueAgg>([
       { $match: { status: "success" } },
       {
         $group: {
@@ -67,26 +89,26 @@ const getDashboardKPIs = async (req, res) => {
 
     const recentUsers = await userModel.find().sort({ createdAt: -1 }).limit(5);
 
-    const recentActivity = [
-     ...recentTransactions.map((t) => {
-  let userName = "User";
+    const recentActivity:RecentActivity[] = [
+     ...recentTransactions.map<RecentActivity>((t) => {
+        let userName = "User";
 
-  // Narrow the type
-  if (typeof t.user === "object" && "fullName" in t.user) {
-    userName = t.user.fullName;
-  }
+          // Narrow the type
+        if (typeof t.user === "object" && "fullName" in t.user) {
+        userName = t.user.fullName;
+      }
 
-  return {
-    type: "transaction",
-    message: `Payment of ${t.amount} ${t.currency} by ${userName}`,
-    time: t.createdAt,
-  };
-}),
-      ...recentUsers.map((u) => ({
-        type: "user",
-        message: `New user registered: ${u.fullName || u.email}`,
-        time: u.createdAt,
-      })),
+      return {
+          type: "transaction",
+          message: `Payment of ${t.amount} ${t.currency} by ${userName}`,
+          time: t.createdAt,
+          };
+          }),
+          ...recentUsers.map<RecentActivity>((u) => ({
+            type: "user",
+            message: `New user registered: ${u.fullName || u.email}`,
+            time: u.createdAt,
+          })),
     ]
      .sort(
   (a, b) =>
@@ -94,7 +116,7 @@ const getDashboardKPIs = async (req, res) => {
 
       .slice(0, 5);
 
-    const planStats = await Subscription.aggregate([
+    const planStats = await Subscription.aggregate<planAgg>([
       {
         $group: {
           _id: "$plan",
@@ -107,7 +129,7 @@ const getDashboardKPIs = async (req, res) => {
       name: item._id.charAt(0).toUpperCase() + item._id.slice(1),
       value: item.count,
     }));
-    const growth = await userModel.aggregate([
+    const growth = await userModel.aggregate<UsergrowthAgg>([
       {
         $group: {
           _id: { $month: "$createdAt" },
@@ -130,11 +152,9 @@ const getDashboardKPIs = async (req, res) => {
       planBreakDown,
       data,
     });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Failed to fetch dashboard KPIs" });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Failed to fetch dashboard KPIs";
+    res.status(500).json({ message });
   }
 };
-module.exports = {
-  getDashboardKPIs,
-};
+

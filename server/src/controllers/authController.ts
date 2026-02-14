@@ -57,7 +57,15 @@ export const registerUser = async (req:Request<{},{},RegisterBody>, res:Response
       gender,
     });
 
-    const token = generateTokenAndSetCookie(newUser, res);
+    const token = generateTokenAndSetCookie(
+      {
+        id: newUser._id.toString(),
+        role: newUser.role,
+        email: newUser.email,
+      },
+      res
+    );
+
     await Event.create({
       type: "User Registration",
       user: newUser._id,
@@ -95,7 +103,15 @@ export const loginUser = async (req:Request<{},{},LoginBody>, res:Response):Prom
        return
     }
 
-    const token = generateTokenAndSetCookie(user, res);
+   const token = generateTokenAndSetCookie(
+    {
+      id: user._id.toString(),
+      role: user.role,
+      email: user.email,
+    },
+    res
+  );
+
     user.lastLogin = new Date();
     await user.save();
     await Event.create({

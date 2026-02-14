@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { Response } from "express";
 
 interface IUserPayload {
-  _id: string;
+  id: string;
   role: string;
   email: string;
 }
@@ -17,7 +17,7 @@ export const generateTokenAndSetCookie = (
 
   const token = jwt.sign(
     {
-      id: user._id,
+      id: user.id,
       role: user.role,
       email: user.email,
     },

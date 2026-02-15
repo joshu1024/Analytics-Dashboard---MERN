@@ -12,8 +12,8 @@ interface CompanyQuery{
 }
 export const getCompanies = async (req:Request<{},{},{},CompanyQuery>, res:Response):Promise<void> => {
   try {
-    const page = parseInt(req.query.page) ?? 1;
-    const limit = parseInt(req.query.limit) ?? 10;
+    const page = parseInt(req.query.page ?? "1") ;
+    const limit = parseInt(req.query.limit ?? "10") ;
     const skip = (page - 1) * limit;
     const total = await Company.countDocuments();
     const companies:ICompany[] = await Company.find()

@@ -148,6 +148,7 @@ export const forgotPassword = async (req:Request<{},{},ForgotPassword>, res:Resp
     const user = await userModel.findOne({ email });
     if (!user) {
       res.status(404).json({ error: "user not found" });
+      return
     }
     const resetToken = crypto.randomBytes(32).toString("hex");
     const hashedToken = crypto

@@ -5,9 +5,9 @@
     "rootDir": "src",
     "outDir": "dist",
     "esModuleInterop": true,
-     "allowSyntheticDefaultImports": true,
-    "allowJs": true,
-    "strict": false
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*"],
   "exclude": ["dist", "node_modules"]

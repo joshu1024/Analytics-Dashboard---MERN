@@ -1,6 +1,6 @@
 import Subscription from  "../models/Subscription"
 import Transaction,{ITransaction} from  "../models/Transaction"
-import userModel from  "../models/userModel"
+import userModel, { IUsermodel } from  "../models/userModel"
 import { Request,Response } from "express";
 
 interface revenueAgg{
@@ -85,18 +85,13 @@ export const getDashboardKPIs = async (req:Request, res:Response) => {
     // ✅ Recent Activities (last 5)
     const recentTransactions = await Transaction.find()
       .sort({ createdAt: -1 })
-      .limit(5);
+      .limit(5).populate<{ user: IUsermodel | null }>("user");
 
     const recentUsers = await userModel.find().sort({ createdAt: -1 }).limit(5);
 
     const recentActivity:RecentActivity[] = [
      ...recentTransactions.map<RecentActivity>((t) => {
-        let userName = "User";
-
-          // Narrow the type
-        if (typeof t.user === "object" && "fullName" in t.user) {
-        userName = t.user.fullName;
-      }
+        const userName = t.user?.fullName ?? "User";
 
       return {
           type: "transaction",

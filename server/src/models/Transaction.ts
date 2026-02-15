@@ -2,7 +2,7 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 import { IUsermodel } from "./userModel";
 
 export interface ITransaction extends Document{
-user:Types.ObjectId | IUsermodel,
+user:Types.ObjectId | IUsermodel | null,
 subscription?:Types.ObjectId,
 amount:number,
 currency:string,

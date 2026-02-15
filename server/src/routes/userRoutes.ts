@@ -1,15 +1,15 @@
-const express = require("express");
+import { Router } from "express";
 
-const {
+import {
   getUsers,
   updateUserRole,
   toggleUserStatus,
-} = require("../controllers/userController");
+} from "../controllers/userController";
 
-const router = express.Router();
+const router = Router();
 
 router.get("/", getUsers);
 router.patch("/:id/role", updateUserRole);
 router.patch("/:id/status", toggleUserStatus);
 
-module.exports = router;
+export default router;

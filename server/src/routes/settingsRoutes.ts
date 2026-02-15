@@ -1,14 +1,15 @@
-const express = require("express");
+import { Router } from "express";
 
-const {
+import {
   getSettings,
   updateGeneralSettings,
   updateSMTP,
   updateBranding,
   generateApiKey,
-} = require("../controllers/settingsController");
+} from "../controllers/settingsController";
 
-const router = express.Router();
+
+const router = Router();
 
 router.get("/", getSettings);
 router.put("/general", updateGeneralSettings);
@@ -16,4 +17,4 @@ router.put("/smtp", updateSMTP);
 router.put("/branding", updateBranding);
 router.post("/api-keys", generateApiKey);
 
-module.exports = router;
+export default router;

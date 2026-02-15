@@ -1,13 +1,13 @@
-import express = require("express");
-import cors = require("cors");
+import express from "express";
+import cors from "cors";
 
-const authRoutes = require("./routes/authRoutes");
-const analyticsRoutes = require("./routes/analyticsRoutes");
-const dashboardRoutes = require("./routes/dashboardRoutes");
-const companyRoutes = require("./routes/companyRoutes");
-const billingRoutes = require("./routes/billingRoutes");
-const userRoutes = require("./routes/userRoutes");
-const settingsRoutes = require("./routes/settingsRoutes");
+import authRoutes from "./routes/authRoutes";
+import analyticsRoutes from "./routes/analyticsRoutes";
+import dashboardRoutes from "./routes/dashboardRoutes";
+import companyRoutes from "./routes/companyRoutes";
+import billingRoutes from "./routes/billingRoutes";
+import userRoutes from "./routes/userRoutes";
+import settingsRoutes from "./routes/settingsRoutes";
 
 const app = express();
 
@@ -34,4 +34,4 @@ app.get("/", (_req, res) => {
   res.send("The server is working");
 });
 
-export = app;
+export default app;

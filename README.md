@@ -79,7 +79,7 @@ Recharts
 
 Axios
 
-CSS
+Tailwind CSS
 
 Backend
 

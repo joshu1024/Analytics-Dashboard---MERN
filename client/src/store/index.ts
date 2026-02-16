@@ -20,6 +20,9 @@ const store = configureStore({
     user: userReducer,
     settings: settingReducer,
   },
+
 });
+export type Rootstate = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
 
 export default store;

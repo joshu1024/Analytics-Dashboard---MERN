@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { registerApi } from "../../api/authApi.js";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import {RegisterRequest, RegisterResponse} from "../../types/auth.js"
 import {
   authStart,
   authSuccess,
   authFail,
 } from "../../store/slices/authSlice.js";
+import { Rootstate } from "../../store/index.js";
 
 const RegisterPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading, error } = useSelector((state:Rootstate) => state.auth);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<RegisterRequest>({
     fullName: "",
     username: "",
     email: "",
@@ -24,11 +26,11 @@ const RegisterPage = () => {
     gender: "",
   });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       dispatch(authStart());
-      const data = await registerApi(form);
+      const data:RegisterResponse = await registerApi(form);
       dispatch(
         authSuccess({
           user: {
@@ -44,7 +46,7 @@ const RegisterPage = () => {
       );
       navigate("/login");
     } catch (error) {
-      dispatch(authFail(error));
+      dispatch(authFail(error as string));
     }
   };
 
@@ -112,7 +114,7 @@ const RegisterPage = () => {
               name="gender"
               value="male"
               checked={form.gender === "male"}
-              onChange={(e) => setForm({ ...form, gender: e.target.value })}
+              onChange={(e) => setForm({ ...form, gender: e.target.value as "male" })}
             />
             <span>Male</span>
           </label>
@@ -123,7 +125,7 @@ const RegisterPage = () => {
               name="gender"
               value="female"
               checked={form.gender === "female"}
-              onChange={(e) => setForm({ ...form, gender: e.target.value })}
+              onChange={(e) => setForm({ ...form, gender: e.target.value as "female"})}
             />
             <span>Female</span>
           </label>

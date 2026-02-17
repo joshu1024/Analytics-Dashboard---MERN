@@ -1,27 +1,29 @@
-import React, { useState } from "react";
+import React, { SyntheticEvent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authStart, authSuccess, authFail } from "../../store/slices/authSlice";
 import { loginApi } from "../../api/authApi";
 import { useNavigate, NavLink } from "react-router-dom";
+import { Rootstate,AppDispatch } from "../../store";
+import { LoginRequest, LoginResponse } from "../../types/auth";
 
 const LoginPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading, error } = useSelector((state:Rootstate) => state.auth);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<LoginRequest>({
     email: "",
     password: "",
   });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       dispatch(authStart());
 
-      const data = await loginApi(form);
+      const data:LoginResponse = await loginApi(form);
 
       dispatch(
         authSuccess({
@@ -36,7 +38,8 @@ const LoginPage = () => {
 
       navigate("/");
     } catch (err) {
-      dispatch(authFail(err));
+     dispatch(authFail(String(err)));
+
     }
   };
 

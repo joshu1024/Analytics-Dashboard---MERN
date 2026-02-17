@@ -1,18 +1,20 @@
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { resetPassword } from "../../store/slices/authSlice.js";
+import { AppDispatch, Rootstate } from "../../store/index.js";
 
 const ResetPasswordPage = () => {
-  const { token } = useParams();
-  const dispatch = useDispatch();
+  const { token } = useParams<{token:string}>();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { loading, error, message } = useSelector((s) => s.auth);
+  const { loading, error, message } = useSelector((s:Rootstate) => s.auth);
 
   const [password, setPassword] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if(!token) return
     const result = await dispatch(resetPassword({ token, password }));
 
     if (resetPassword.fulfilled.match(result)) {

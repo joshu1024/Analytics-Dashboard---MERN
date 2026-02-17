@@ -8,10 +8,10 @@ import {
   authSuccess,
   authFail,
 } from "../../store/slices/authSlice.js";
-import { Rootstate } from "../../store/index.js";
+import { AppDispatch, Rootstate } from "../../store/index.js";
 
 const RegisterPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state:Rootstate) => state.auth);
 

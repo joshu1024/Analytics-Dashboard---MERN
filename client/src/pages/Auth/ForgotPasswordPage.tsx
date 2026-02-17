@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { SyntheticEvent, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { forgotPassword } from "../../store/slices/authSlice.js";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
+import { Rootstate,AppDispatch } from "../../store/index.js";
+
 
 const ForgotPasswordPage = () => {
-  const dispatch = useDispatch();
-  const { message, loading, error } = useSelector((state) => state.auth);
-  const [email, setEmail] = useState("");
-  const handleSubmit = (e) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { message, loading, error } = useSelector((state:Rootstate) => state.auth);
+  const [email, setEmail] = useState<string>(" ");
+  const handleSubmit = (e:SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(forgotPassword(email));
   };

@@ -1,10 +1,10 @@
 export interface User {
   fullName: string;
-  username: string;
+  username?: string;
   email: string;
   role: string;
-  country: string;
-  gender: "male" | "female";
+  country?: string;
+  gender?: "male" | "female";
 }
 
 
@@ -49,6 +49,7 @@ export interface LoginResponse {
   fullName: string;
   message?: string; 
 }
+
 
 export interface LogoutResponse {
   message: string;

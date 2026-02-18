@@ -6,7 +6,7 @@ export const registerApi = async (formData:RegisterRequest):Promise<RegisterResp
   try {
     const { data } = await api.post<RegisterResponse>("/auth/register", formData);
     return data;
-  } catch (error) {
+  } catch (error:unknown) {
     const err = error as AxiosError<{ message: string }>;
   throw err.response?.data?.message || "Registration failed";
   }

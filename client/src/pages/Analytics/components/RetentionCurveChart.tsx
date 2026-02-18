@@ -9,8 +9,9 @@ import {
 } from "recharts";
 import api from "../../../api/api.js";
 import { useSelector } from "react-redux";
+import {Rootstate} from "../../../store/index.js"
 const RetentionCurveChart = () => {
-  const { data = [], loading } = useSelector((state) => state.analytics);
+  const { data = [], loading } = useSelector((state:Rootstate) => state.analytics);
 
   if (loading) return <p>Loading retention data...</p>;
 

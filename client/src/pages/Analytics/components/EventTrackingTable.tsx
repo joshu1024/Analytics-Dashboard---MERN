@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
+import { Rootstate } from "../../../store";
 const EventTrackingTable = () => {
-  const { events } = useSelector((state) => state.analytics);
+  const { events } = useSelector((state:Rootstate) => state.analytics);
   return (
     <div className="bg-white p-4 rounded shadow">
       <h3 className="font-semibold mb-4">Event Tracking</h3>

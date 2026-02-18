@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import api from "../../../api/api.js";
-const KPICard = ({ title, value }) => (
+import {Rootstate} from "../../../store/index.js"
+interface KPICardProps {
+  title:string,
+  value:number | string
+}
+const KPICard = ({ title, value }:KPICardProps) => (
   <div className="bg-white p-4 rounded shadow">
     <p className="text-sm text-gray-500">{title}</p>
     <p className="text-xl font-semibold">{value}</p>
   </div>
 );
 const KPIGroup = () => {
-  const { kpis = {}, loading } = useSelector((state) => state.analytics || {});
+  const { kpis, loading } = useSelector((state:Rootstate) => state.analytics || {});
 
   if (loading) return <p>Loading kpi data...</p>;
   return (

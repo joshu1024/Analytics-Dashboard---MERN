@@ -1,9 +1,10 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import {Rootstate} from "../../../store"
 
 const UserDemographicsChart = () => {
-  const { demographics, loading } = useSelector((state) => state.analytics);
+  const { demographics, loading } = useSelector((state:Rootstate) => state.analytics);
   const COLORS = [
     "#8884d8",
     "#82ca9d",

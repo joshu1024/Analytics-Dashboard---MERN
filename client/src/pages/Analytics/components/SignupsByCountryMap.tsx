@@ -9,22 +9,23 @@ import {
 } from "recharts";
 import { useSelector } from "react-redux";
 import { LabelList } from "recharts";
-
+const COLORS = [
+  "#8884d8",
+  "#82ca9d",
+  "#ffc658",
+  "#ff8042",
+  "#8dd1e1",
+  "#a4de6c",
+  "#893F45",
+];
+import {Rootstate} from  "../../../store"
+import { SignupByCountry } from "../../../types/analytics";
 const SignupsByCountryMap = () => {
-  const { data2 = [], loading } = useSelector((state) => state.analytics);
+  const { data2 = [], loading } = useSelector((state:Rootstate) => state.analytics);
   if (loading) return <p>Loading signups by country data...</p>;
-  const info = data2
+  const info = (data2 as SignupByCountry[])
     .map((d) => ({ country: d._id, count: d.count }))
     .sort((a, b) => b.count - a.count);
-  const COLORS = [
-    "#8884d8",
-    "#82ca9d",
-    "#ffc658",
-    "#ff8042",
-    "#8dd1e1",
-    "#a4de6c",
-    "#893F45",
-  ];
 
   return (
     <div className="bg-white p-4 rounded shadow mb-6">

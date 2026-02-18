@@ -12,9 +12,10 @@ import {
   fetchUserDemographics,
   fetchEvents,
 } from "../../store/slices/analyticsSlice.js";
+import {AppDispatch} from "../../store"
 
 const AnalyticsPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(fetchKPIs());
     dispatch(fetchRetentionCurve());

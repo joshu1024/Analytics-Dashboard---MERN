@@ -7,7 +7,7 @@ import companiesReducer from "./slices/companiesSlice.js";
 import billingReducer from "./slices/billingSlice.js";
 import userReducer from "./slices/userSlice.js";
 import settingReducer from "./slices/settingsSlice.js";
-console.log("STORE CREATED by me");
+import {TypedUseSelectorHook, useSelector} from "react-redux"
 
 const store = configureStore({
   reducer: {
@@ -24,5 +24,5 @@ const store = configureStore({
 });
 export type Rootstate = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
-
+export const useAppSelector: TypedUseSelectorHook<Rootstate> = useSelector;
 export default store;

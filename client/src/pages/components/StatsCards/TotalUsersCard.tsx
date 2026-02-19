@@ -1,6 +1,8 @@
 import { useSelector } from "react-redux";
+import { Rootstate} from "../../../store"
+
 const TotalUsersCard = () => {
-  const { kpis, loading, error } = useSelector((state) => state.dashboard);
+  const { kpis, loading, error } = useSelector((state:Rootstate) => state.dashboard);
 
   if (loading && !kpis.totalUsers) {
     return <div>Loading...</div>;

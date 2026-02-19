@@ -1,11 +1,13 @@
 import React from "react";
 import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { useSelector } from "react-redux";
+import { Rootstate } from "../../../store";
+import { planBreakDown } from "../../../types/dashboard";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 const PlanBreakdownChart = () => {
-  const { kpis, loading } = useSelector((state) => state.dashboard);
-  const data = kpis.planBreakDown;
+  const { kpis, loading } = useSelector((state:Rootstate) => state.dashboard);
+  const data:planBreakDown[] = kpis.planBreakDown;
   if (loading) return <div className="">Loading...</div>;
 
   return (

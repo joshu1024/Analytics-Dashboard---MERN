@@ -1,14 +1,12 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { fetchDashboardKPIsApi } from "../../api/dashboardApi.js";
+import { DashboardState, KPI } from "../../types/dashboard.js";
+import { Rootstate } from "../index.js";
 
-// AsyncThunk for fetching KPIs
-export const fetchDashboardKPIs = createAsyncThunk(
+export const fetchDashboardKPIs = createAsyncThunk<KPI,void,{state:Rootstate,rejectValue:string}>(
   "dashboard/fetchKPIs",
   async (_, { getState, rejectWithValue }) => {
-    console.log("THUNK STARTED"); // very first line
     const token = getState().auth.token;
-    console.log("TOKEN IN THUNK:", token);
-
     if (!token) {
       return rejectWithValue("User not authenticated");
     }
@@ -17,16 +15,13 @@ export const fetchDashboardKPIs = createAsyncThunk(
       const data = await fetchDashboardKPIsApi(token);
 
       return data;
-    } catch (error) {
-      return rejectWithValue(error);
+    } catch (error:unknown) {
+      if(error instanceof Error) return rejectWithValue(error.message)
+     return rejectWithValue("Failed to fetch dashboard KPIs");
     }
   },
 );
-
-// Redux slice
-const dashboardSlice = createSlice({
-  name: "dashboard",
-  initialState: {
+ const initialState:DashboardState = {
     kpis: {
       totalUsers: 0,
       activeUsers: 0,
@@ -39,7 +34,11 @@ const dashboardSlice = createSlice({
     },
     loading: false,
     error: null,
-  },
+  }
+
+const dashboardSlice = createSlice({
+  name: "dashboard",
+ initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -47,18 +46,13 @@ const dashboardSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchDashboardKPIs.fulfilled, (state, action) => {
-        console.log("KPI PAYLOAD:", action.payload);
+      .addCase(fetchDashboardKPIs.fulfilled, (state, action:PayloadAction<KPI>) => {
         state.loading = false;
         state.kpis = action.payload;
-        state.revenueChart = action.payload.revenueChart;
-        state.recentActivity = action.payload.recentActivity;
-        state.planBreakDown = action.payload.planBreakDown;
-        state.data = action.payload.data;
       })
       .addCase(fetchDashboardKPIs.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload ?? "Failed to fetch dashboard KPIs";
       });
   },
 });

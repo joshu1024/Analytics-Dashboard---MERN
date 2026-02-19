@@ -1,19 +1,20 @@
 import { useSelector } from "react-redux";
+import { Rootstate } from "../../../store";
 
 const RecentActivityFeed = () => {
-  const { recentActivity, loading } = useSelector((state) => ({
+  const { recentActivity, loading } = useSelector((state:Rootstate) => ({
     recentActivity: state.dashboard.kpis.recentActivity,
     loading: state.dashboard.loading,
   }));
 
   if (loading) return <p>Loading...</p>;
-  const timeAgo = (date) => {
+  const timeAgo = (date:string | undefined):string => {
     const now = new Date();
-    const past = new Date(date);
+    const past = new Date(date ?? Date.now());
 
     if (isNaN(past.getTime())) return "just now";
 
-    let diff = Math.floor((now - past) / 1000);
+    let diff = Math.floor((now.getTime() - past.getTime()) / 1000);
 
     // handle future dates
     if (diff < 0) diff = Math.abs(diff);

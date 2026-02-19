@@ -9,6 +9,8 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
+import { Rootstate } from "../../../store";
+import { UserGrowthPoint } from "../../../types/dashboard";
 
 const COLORS = [
   "#8884d8",
@@ -21,8 +23,9 @@ const COLORS = [
 ];
 
 const UserGrowthChart = () => {
-  const { kpis, loading } = useSelector((state) => state.dashboard);
-  const data = kpis.data;
+  const { kpis, loading } = useSelector((state:Rootstate) => state.dashboard);
+  const data:UserGrowthPoint[] = kpis.data;
+  if(loading) return <div>Loading!</div>
   return (
     <div className="bg-white  p-4 rounded shadow">
       <h3 className="">User Growth</h3>

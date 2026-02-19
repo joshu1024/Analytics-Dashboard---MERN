@@ -7,9 +7,10 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { Rootstate } from "../../../store";
 
 const RevenueChart = () => {
-  const { revenueChart } = useSelector((state) => state.dashboard);
+  const { revenueChart } = useSelector((state:Rootstate) => state.dashboard.kpis);
   return (
     <div className="bg-white p-4 rounded shadow">
       <h3 className="font-semibold mb-2">Revenue Growth</h3>

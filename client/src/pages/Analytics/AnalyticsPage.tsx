@@ -12,7 +12,7 @@ import {
   fetchUserDemographics,
   fetchEvents,
 } from "../../store/slices/analyticsSlice.js";
-import {AppDispatch} from "../../store"
+import { AppDispatch } from "../../store"
 
 const AnalyticsPage = () => {
   const dispatch = useDispatch<AppDispatch>();

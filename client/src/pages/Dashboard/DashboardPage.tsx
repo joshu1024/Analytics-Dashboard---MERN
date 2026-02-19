@@ -6,11 +6,12 @@ import UserGrowthChart from "../components/Charts/UserGrowthChart";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchDashboardKPIs } from "../../store/slices/dashboardSlice";
+import { AppDispatch } from "../../store";
 
 const DashboardPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    return fetchDashboardKPIs();
+     dispatch(fetchDashboardKPIs());
   }, [dispatch]);
   console.log(import.meta.env.VITE_API_URL);
 

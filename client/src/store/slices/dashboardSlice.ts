@@ -10,7 +10,6 @@ export const fetchDashboardKPIs = createAsyncThunk<KPI,void,{state:Rootstate,rej
     if (!token) {
       return rejectWithValue("User not authenticated");
     }
-
     try {
       const data = await fetchDashboardKPIsApi(token);
 

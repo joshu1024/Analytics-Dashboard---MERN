@@ -1,14 +1,19 @@
 import { useSelector, useDispatch } from "react-redux";
 import { companiesPage } from "../../../store/slices/companiesSlice.js";
-
-const CompanyTable = ({ onSelectedCompany }) => {
-  const dispatch = useDispatch();
+import { Rootstate } from "../../../store/index.js";
+import { Company } from "../../../types/companies.js";
+import { useAppDispatch } from "../../../store/hooks.js";
+interface Props {
+  onSelectedCompany:(company:Company) => void
+}
+const CompanyTable = ({ onSelectedCompany }:Props) => {
+  const dispatch = useAppDispatch();
   const { companies, totalPages, page, loading, error } = useSelector(
-    (state) => state.companies,
+    (state:Rootstate) => state.companies,
   );
-
-  if (error) return <p className="text-red-500">{error}</p>;
-  function handlePageChange(newPage) {
+   if (loading) return <div>Loading...</div>;
+   if (error) return <div className="text-red-500">Error</div>;
+  function handlePageChange(newPage:number) {
     dispatch(companiesPage(newPage));
   }
 

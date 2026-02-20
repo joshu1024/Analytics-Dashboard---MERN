@@ -11,6 +11,8 @@ const TransactionTable = () => {
     loading,
     error,
   } = useSelector((state) => state.billing);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">Error</div>;
   return (
     <div>
       <h3 className="font-semibold mb-2">Transactions</h3>

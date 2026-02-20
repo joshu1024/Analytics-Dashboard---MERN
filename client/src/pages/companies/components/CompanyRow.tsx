@@ -1,6 +1,9 @@
 import React from "react";
-
-const CompanyRow = ({ company }) => {
+import { Company } from "../../../types/companies";
+interface Props{
+  company:Company
+}
+const CompanyRow = ({ company }:Props) => {
   return (
     <div className="flex justify-between p-2 border-b">
       <div className="">

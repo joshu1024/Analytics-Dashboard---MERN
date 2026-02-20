@@ -1,6 +1,8 @@
 import React from "react";
-
-const CompanyUsersList = () => {
+interface CompanyUsersListProps {
+  companyId: string;
+}
+const CompanyUsersList:React.FC<CompanyUsersListProps> = ({ companyId }) => {
   return (
     <div className="bg-white rounded shadow">
       <h3 className="font-semibold">Company users</h3>

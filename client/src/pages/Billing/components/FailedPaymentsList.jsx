@@ -4,6 +4,8 @@ const FailedPaymentsList = () => {
   const { failedPayments, loading, error } = useSelector(
     (state) => state.billing,
   );
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">Error</div>;
   return (
     <div className="bg-white p-4 rounded shadow">
       <h3 className="font-semibold mb-2">Failed Payments</h3>

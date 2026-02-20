@@ -1,10 +1,11 @@
 import React from "react";
-import PlanSelect from "../companies/components/PlanSelect";
+import PlanSelect from "./components/PlanSelect";
 import { useSelector } from "react-redux";
 
 const SubscriptionPlansPage = () => {
   const { plans, loading, error } = useSelector((state) => state.billing);
-  console.log("plans:", plans, typeof plans);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">Error</div>;
 
   return (
     <div>

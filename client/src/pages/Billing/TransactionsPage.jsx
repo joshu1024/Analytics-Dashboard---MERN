@@ -4,6 +4,8 @@ const TransactionsPage = () => {
   const { recentTransactions, loading, error } = useSelector(
     (state) => state.billing,
   );
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">Error</div>;
   return (
     <div className="bg-white p-4 rounded shadow">
       <h2 className="text-xl font-semibold mb-4">Transactions</h2>

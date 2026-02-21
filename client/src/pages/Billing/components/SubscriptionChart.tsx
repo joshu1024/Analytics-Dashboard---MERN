@@ -1,10 +1,11 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { ResponsiveContainer, Pie, PieChart, Tooltip, Cell } from "recharts";
+import { Rootstate } from "../../../store";
 
 const SubscriptionChart = () => {
   const { subscriptions, loading, error } = useSelector(
-    (state) => state.billing,
+    (state:Rootstate) => state.billing,
   );
   if (loading) return <div>Loading..</div>;
   if (error) return <div className="text-red-500">Error</div>;
@@ -28,7 +29,7 @@ const SubscriptionChart = () => {
         <PieChart>
           <Pie data={data} dataKey="value" nameKey="name" label>
             {data.map((_, index) => (
-              <Cell index={index} fill={COLORS[index % COLORS.length]} />
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           <Tooltip />

@@ -1,9 +1,10 @@
 import React from "react";
 import PlanSelect from "./components/PlanSelect";
 import { useSelector } from "react-redux";
+import { Rootstate } from "../../store";
 
 const SubscriptionPlansPage = () => {
-  const { plans, loading, error } = useSelector((state) => state.billing);
+  const { plans, loading, error } = useSelector((state:Rootstate) => state.billing);
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">Error</div>;
 

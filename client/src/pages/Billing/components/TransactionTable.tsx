@@ -1,16 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
-const transactions = [
-  { id: 1, user: "Joe", amount: "$200", status: "paid" },
-  { id: 2, user: "Kip", amount: "$300", status: "failed" },
-];
+import { Rootstate } from "../../../store";
 
 const TransactionTable = () => {
   const {
     recentTransactions = [],
     loading,
     error,
-  } = useSelector((state) => state.billing);
+  } = useSelector((state:Rootstate) => state.billing);
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">Error</div>;
   return (

@@ -1,6 +1,9 @@
 import React from "react";
-
-const PlanSelect = ({ plan }) => {
+import { Plan } from "../../../types/billing";
+interface Props{
+  plan:Plan
+}
+const PlanSelect:React.FC<Props> = ({ plan }) => {
   return (
     <div className="bg-white rounded shadow p-4 ">
       <h3 className="text-lg font-semibold capitalize">{plan._id}</h3>

@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { DashboardState, KPI } from "../types/dashboard";
+import {  KPI } from "../types/dashboard";
 import api from "./api";
 
 export const fetchDashboardKPIsApi = async (token:string):Promise<KPI> => {

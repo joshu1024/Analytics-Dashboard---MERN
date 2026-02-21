@@ -5,11 +5,11 @@ import SubscriptionChart from "./components/SubscriptionChart";
 import TransactionTable from "./components/TransactionTable";
 import SubscriptionPlansPage from "./SubscriptionPlansPage";
 import TransactionsPage from "./TransactionsPage";
-import { useDispatch } from "react-redux";
 import { billingPage } from "../../store/slices/billingSlice.js";
+import { useAppDispatch } from "../../store/hooks";
 
 const BillingDashboard = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(billingPage());

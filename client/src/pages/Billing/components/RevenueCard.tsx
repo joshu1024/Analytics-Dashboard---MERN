@@ -1,8 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { Rootstate } from "../../../store";
 
 const RevenueCard = () => {
-  const { monthlyRevenue } = useSelector((state) => state.billing);
+  const { monthlyRevenue } = useSelector((state:Rootstate) => state.billing);
   return (
     <div className="bg-white p-4 rounded shadow">
       <p className="text-sm text-gray-500">Monthly revenue</p>

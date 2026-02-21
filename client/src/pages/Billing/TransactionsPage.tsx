@@ -1,8 +1,9 @@
 import { useSelector } from "react-redux";
+import { Rootstate } from "../../store";
 
 const TransactionsPage = () => {
   const { recentTransactions, loading, error } = useSelector(
-    (state) => state.billing,
+    (state:Rootstate) => state.billing,
   );
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">Error</div>;
@@ -23,9 +24,11 @@ const TransactionsPage = () => {
                 <p className="font-medium">
                   {tx.user?.fullName || "Unknown User"}
                 </p>
-                <p className="text-sm text-gray-500">
-                  {new Date(tx.createdAt).toLocaleDateString()}
-                </p>
+               <p className="text-sm text-gray-500">
+                {tx.createdAt
+                  ? new Date(tx.createdAt).toLocaleDateString()
+                  : "Unknown date"}
+              </p>
                 <p
                   className={`text-sm capitalize ${tx.status === "success" ? "text-green-400" : "text-gray-400"}`}
                 >

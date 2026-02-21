@@ -1,8 +1,9 @@
 import { useSelector } from "react-redux";
+import { Rootstate } from "../../../store";
 
 const FailedPaymentsList = () => {
   const { failedPayments, loading, error } = useSelector(
-    (state) => state.billing,
+    (state:Rootstate) => state.billing,
   );
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">Error</div>;
@@ -27,7 +28,7 @@ const FailedPaymentsList = () => {
                   {tx.paymentMethod} • {tx.failureReason}
                 </p>
                 <p className="text-xs text-gray-400">
-                  {new Date(tx.createdAt).toLocaleDateString()}
+                  {tx.createdAt ? new Date(tx.createdAt).toLocaleDateString() :"unknown date"}
                 </p>
               </div>
 

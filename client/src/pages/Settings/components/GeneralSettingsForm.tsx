@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUpdatedSettings } from "../../../store/slices/settingsSlice.js";
+import { Rootstate } from "../../../store/index.js";
+import { useAppDispatch } from "../../../store/hooks.js";
 
 const GeneralSettingsForm = () => {
   const [companyName, setCompanyName] = useState("");
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { settings, loading, error } = useSelector((state) => state.settings);
+  const { settings, loading, error } = useSelector((state:Rootstate) => state.settings);
 
   useEffect(() => {
     if (settings) {
@@ -14,7 +16,7 @@ const GeneralSettingsForm = () => {
     }
   }, [settings]);
 
-  function handleSubmit(e) {
+  function handleSubmit(e:React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     dispatch(fetchUpdatedSettings({ companyName }));
   }

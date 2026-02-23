@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { UpdateSMTPSettings } from "../../../store/slices/settingsSlice.js";
+import { Rootstate } from "../../../store/index.js";
+import { useAppDispatch } from "../../../store/hooks.js";
 
 const SMTPSettings = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { settings, loading } = useSelector((state) => state.settings);
+  const { settings, loading } = useSelector((state:Rootstate) => state.settings);
 
   const [host, setHost] = useState("");
 
@@ -16,7 +18,7 @@ const SMTPSettings = () => {
     }
   }, [settings]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(UpdateSMTPSettings({ host }));
   };

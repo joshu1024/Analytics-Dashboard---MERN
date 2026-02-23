@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Rootstate } from "../../../store";
+import { useAppDispatch } from "../../../store/hooks";
+import { UpdateBrandingSettings } from "../../../store/slices/settingsSlice";
 
 export const BrandingSettingsForm = () => {
-  const dispatch = useDispatch();
-  const { settings, loading } = useSelector((state) => state.settings);
+  const dispatch = useAppDispatch();
+  const { settings, loading } = useSelector((state:Rootstate) => state.settings);
   const [companyName, setCompanyName] = useState("");
 
   useEffect(() => {

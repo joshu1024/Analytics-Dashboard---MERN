@@ -6,9 +6,10 @@ import APIKeysManager from "./components/APIKeysManager";
 import BrandingSettingsForm from "./components/BrandingSettingsForm.jsx";
 import { useDispatch } from "react-redux";
 import { fetchAllSettings } from "../../store/slices/settingsSlice.js";
+import { useAppDispatch } from "../../store/hooks";
 
 const SettingsPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchAllSettings());

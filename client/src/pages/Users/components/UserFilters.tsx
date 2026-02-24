@@ -1,4 +1,9 @@
-const UserFilters = ({ search, setSearch, role, setRole }) => {
+import { FC } from "react";
+import {UserFiltersProps} from "../../../types/user"
+
+
+
+const UserFilters:FC<UserFiltersProps> = ({ search, setSearch, role, setRole }) => {
   return (
     <div className="flex gap-4 mb-4">
       <input

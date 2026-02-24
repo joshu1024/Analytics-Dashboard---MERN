@@ -1,4 +1,11 @@
-const UserDetailPage = ({ userDetails }) => {
+import { FC } from "react";
+import { User } from "../../types/user";
+
+interface Props{
+  userDetails:User | null
+}
+
+const UserDetailPage:FC<Props> = ({ userDetails }) => {
   if (!userDetails) {
     return (
       <div className="bg-white rounded p-4 shadow text-gray-500">

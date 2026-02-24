@@ -1,4 +1,12 @@
-const RoleSelect = ({ value, onChange, disabled }) => {
+ import { FC } from "react";
+
+interface RoleSelectProps {
+  value: string;
+  onChange: (role: string) => void;
+  disabled?: boolean;
+}
+const RoleSelect:FC<RoleSelectProps> = ({ value, onChange, disabled }) => {
+ 
   return (
     <select
       value={value}

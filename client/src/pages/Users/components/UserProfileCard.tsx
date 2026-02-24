@@ -1,4 +1,11 @@
-const UserProfileCard = ({ user }) => {
+import { FC } from "react";
+import { User } from "../../../types/user";
+
+interface UserProfileCardProps {
+  user: User | null;
+}
+
+const UserProfileCard:FC<UserProfileCardProps> = ({ user }) => {
   if (!user) {
     return (
       <div className="text-gray-500 text-center py-6">
@@ -23,7 +30,9 @@ const UserProfileCard = ({ user }) => {
           <strong>Status:</strong> {user.isActive ? "Active" : "Inactive"}
         </p>
         <p>
-          <strong>Last Login:</strong> {user.lastLogin || "N/A"}
+          <strong>Last Login:</strong>  {user.lastLogin
+          ? new Date(user.lastLogin).toLocaleDateString()
+          : "N/A"}
         </p>
       </div>
     </div>

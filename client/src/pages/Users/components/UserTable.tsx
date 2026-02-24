@@ -1,19 +1,25 @@
-import { useEffect } from "react";
+import React, { useEffect ,FC} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUser } from "../../../store/slices/userSlice.js";
-import UserRow from "./UserRow";
+import UserRow from "./UserRow.jsx";
+import { Rootstate } from "../../../store/index.js";
+import { useAppDispatch } from "../../../store/hooks.js";
+import { User } from "../../../types/user";
 
-const UserTable = ({ onSelected }) => {
-  const dispatch = useDispatch();
+interface Props{
+  onSelected:(user:User)=>void
+}
+const UserTable:FC<Props> = ({ onSelected }) => {
+  const dispatch = useAppDispatch();
   const {
     users = [],
     page,
     totalPages,
     loading,
     error,
-  } = useSelector((state) => state.user);
+  } = useSelector((state:Rootstate) => state.user);
 
-  function handleUserTable(page) {
+  function handleUserTable(page:number) {
     dispatch(fetchUser(page));
   }
 

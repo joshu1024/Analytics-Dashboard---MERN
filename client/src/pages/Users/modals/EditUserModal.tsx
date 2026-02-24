@@ -1,6 +1,8 @@
-import React from "react";
-
-const EditUserModal = ({ onClose }) => {
+import React, { FC } from "react";
+interface EditUserModalProps {
+  onClose: () => void;
+}
+const EditUserModal:FC<EditUserModalProps> = ({ onClose }) => {
   return (
     <div className="fixed bg-black bg-opacity-40 inset-0 items-center justify-center flex">
       <div className="bg-white p-6 rounded shadow">

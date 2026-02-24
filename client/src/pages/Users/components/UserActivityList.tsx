@@ -1,4 +1,12 @@
-const UserActivityList = ({ activities = [] }) => {
+
+import { UserActivity } from "../../../types/user";
+import { FC } from "react";
+
+interface UserActivityListProps {
+  activities?: UserActivity[];
+}
+
+const UserActivityList:FC<UserActivityListProps> = ({ activities = [] }) => {
   if (!activities.length) {
     return <p className="text-sm text-gray-500">No recent activity</p>;
   }

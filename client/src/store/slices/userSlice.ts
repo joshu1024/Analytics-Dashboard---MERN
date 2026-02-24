@@ -1,43 +1,43 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
   fetchUserApi,
   UpdateUserRoleApi,
   UpdateUserStatusApi,
 } from "../../api/usersApi.js";
-export const fetchUser = createAsyncThunk(
+import { UpdateRolePayload, User, UserResponse, UserState } from "../../types/user.js";
+import { Rootstate } from "../index.js";
+export const fetchUser = createAsyncThunk<UserResponse,number | undefined,{state:Rootstate,rejectValue:string}>(
   "user/kpi",
-  async (page, { getState, rejectWithValue }) => {
+  async (page = 1, { getState, rejectWithValue }) => {
     const token = getState().auth.token;
     if (!token) return rejectWithValue("User not authenticated");
 
     try {
       const data = await fetchUserApi(token, page);
       return data;
-    } catch (error) {
-      return rejectWithValue(error);
+    } catch (error:unknown) {
+     if(error instanceof Error) return rejectWithValue(error.message)
+      return rejectWithValue("Failed to fetch company data");
     }
   },
 );
-export const UpdateUserRole = createAsyncThunk(
+export const UpdateUserRole = createAsyncThunk<User,{userId:string,role:string},{state:Rootstate,rejectValue:string}>(
   "user/UserRole",
   async ({ userId, role }, { getState, rejectWithValue }) => {
     const token = getState().auth.token;
-    if (!token) return rejectWithValue();
+    if (!token) return rejectWithValue("Error updating user role");
     return UpdateUserRoleApi({ token, userId, role });
   },
 );
-export const UpdateUserStatus = createAsyncThunk(
+export const UpdateUserStatus = createAsyncThunk<User, string, { state: Rootstate,rejectValue:string }>(
   "user/UserStatus",
   async (userId, { getState, rejectWithValue }) => {
     const token = getState().auth.token;
-    if (!token) return rejectWithValue();
+    if (!token) return rejectWithValue("Error updating user status");
     return UpdateUserStatusApi({ token, userId });
   },
 );
-
-const userSlice = createSlice({
-  name: "user",
-  initialState: {
+const initialState:UserState =  {
     users: [],
     totalPages: 1,
     page: 1,
@@ -45,7 +45,10 @@ const userSlice = createSlice({
     user: null,
     loading: false,
     error: null,
-  },
+  }
+const userSlice = createSlice({
+  name: "user",
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -68,7 +71,7 @@ const userSlice = createSlice({
           user.role = role;
         }
       })
-      .addCase(UpdateUserRole.fulfilled, (state, action) => {
+      .addCase(UpdateUserRole.fulfilled, (state, action:PayloadAction<User>) => {
         const index = state.users.findIndex(
           (u) => u._id === action.payload._id,
         );

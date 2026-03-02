@@ -93,31 +93,31 @@ export const getDashboardKPIs = async (req:Request, res:Response) => {
      ...recentTransactions.map<RecentActivity>((t) => {
         const userName = t.user?.fullName ?? "User";
 
-      return {
-          type: "transaction",
-          message: `Payment of ${t.amount} ${t.currency} by ${userName}`,
-          time: t.createdAt,
-          };
-          }),
-          ...recentUsers.map<RecentActivity>((u) => ({
-            type: "user",
-            message: `New user registered: ${u.fullName || u.email}`,
-            time: u.createdAt,
-          })),
-    ]
+          return {
+            type: "transaction",
+            message: `Payment of ${t.amount} ${t.currency} by ${userName}`,
+            time: t.createdAt,
+            };
+            }),
+            ...recentUsers.map<RecentActivity>((u) => ({
+              type: "user",
+              message: `New user registered: ${u.fullName || u.email}`,
+              time: u.createdAt,
+            })),
+      ]
      .sort(
-  (a, b) =>
-    (b.time?.getTime() ?? 0) - (a.time?.getTime() ?? 0))
+      (a, b) =>
+        (b.time?.getTime() ?? 0) - (a.time?.getTime() ?? 0))
 
-      .slice(0, 5);
+          .slice(0, 5);
 
-    const planStats = await Subscription.aggregate<planAgg>([
-      {
-        $group: {
-          _id: "$plan",
-          count: { $sum: 1 },
+      const planStats = await Subscription.aggregate<planAgg>([
+        {
+          $group: {
+            _id: "$plan",
+            count: { $sum: 1 },
+          },
         },
-      },
     ]);
 
     const planBreakDown = planStats.map((item) => ({

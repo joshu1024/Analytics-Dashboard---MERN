@@ -73,11 +73,13 @@ export const registerUser = async (req:Request<{},{},RegisterBody>, res:Response
     if (newUser) {
       res.status(200).json({
         _id: newUser._id,
+        fullName:newUser.fullName,
         username: newUser.username,
         email: newUser.email,
         message: "User registered succesfully",
         success: true,
         country: newUser.country,
+        role:newUser.role,
         token,
         gender,
       });

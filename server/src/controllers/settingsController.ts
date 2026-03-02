@@ -21,7 +21,7 @@ interface UpdateSMTPBody {
 interface UpdateBrandingBody {
   companyName: string;
 }
-
+type UpdateBrandingResponse = ISettings | { message: string };
 export const getSettings = async (
   req: Request,
   res: Response<{ settings: ISettings }>
@@ -40,7 +40,6 @@ export const getSettings = async (
     res.status(500).json({ settings: undefined as unknown as ISettings });
   }
 };
-
 export const updateGeneralSettings = async (
   req: Request<{}, {}, UpdateGeneralSettingsBody>,
   res: Response<{ settings: ISettings | null }>
@@ -81,9 +80,10 @@ export const updateSMTP = async (
     res.status(500).json(null);
   }
 };
+
 export const updateBranding = async (
   req: Request<{}, {}, UpdateBrandingBody>,
-  res: Response<ISettings | null>
+  res: Response<UpdateBrandingResponse>
 ): Promise<void> => {
   try {
     const { companyName } = req.body;
@@ -98,7 +98,7 @@ export const updateBranding = async (
   } catch (err: unknown) {
     const message =
       err instanceof Error ? err.message : "Failed to update branding";
-    res.status(500).json(null);
+    res.status(500).json({message});
   }
 };
 export const generateApiKey = async (

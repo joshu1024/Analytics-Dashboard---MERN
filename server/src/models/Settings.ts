@@ -1,12 +1,12 @@
 import mongoose,{Schema,Document} from "mongoose";
 
 export interface ISettings extends Document{
-  companyName:string,
+  companyName?:string,
   smtp?:{host?:string},
   branding?:{companyName?:string},
   apiKeys:{keyHash:string,createdAt:Date}[],
-  createdAt?:Date,
-  updatedAt?:Date
+  createdAt:Date,
+  updatedAt:Date
 }
 
 const SettingsSchema = new Schema<ISettings>(

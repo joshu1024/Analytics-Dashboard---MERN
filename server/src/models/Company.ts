@@ -17,7 +17,7 @@ const companySchema = new Schema<ICompany>(
       type: String,
       enum: ["Active", "Pending", "Inactive"],
       default: "Pending",
-    },
+    }, 
     plan: { type: String, default: "Basic" },
   },
   { timestamps: true }

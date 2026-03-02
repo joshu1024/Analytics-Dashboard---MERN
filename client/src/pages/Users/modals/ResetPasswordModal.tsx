@@ -1,6 +1,8 @@
-import React from "react";
-
-const ResetPasswordModal = ({ onClose }) => {
+import {FC} from "react";
+interface ResetPasswordModalProps {
+  onClose: () => void;
+}
+const ResetPasswordModal:FC<ResetPasswordModalProps> = ({ onClose }) => {
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
       <div className="bg-white rounded shadow w-96 p-6">

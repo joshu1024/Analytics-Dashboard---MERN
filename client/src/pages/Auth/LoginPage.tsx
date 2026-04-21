@@ -24,6 +24,7 @@ const LoginPage = () => {
       dispatch(authStart());
 
       const data:LoginResponse = await loginApi(form);
+      console.log("LOGIN RESPONSE:", data);
 
       dispatch(
         authSuccess({
@@ -35,7 +36,7 @@ const LoginPage = () => {
           token: data.token,
         }),
       );
-
+      console.log("BEFORE NAVIGATE");
       navigate("/");
     } catch (err) {
      dispatch(authFail(String(err)));

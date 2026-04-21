@@ -80,7 +80,6 @@ export const registerUser = async (req:Request<{},{},RegisterBody>, res:Response
         success: true,
         country: newUser.country,
         role:newUser.role,
-        token,
         gender,
       });
     }
@@ -92,6 +91,10 @@ export const registerUser = async (req:Request<{},{},RegisterBody>, res:Response
 export const loginUser = async (req:Request<{},{},LoginBody>, res:Response):Promise<void> => {
   try {
     const { email, password } = req.body;
+    if (!email || !password) {
+        res.status(400).json({ error: "Missing fields" });
+        return
+    }
 
     const user = await userModel.findOne({ email });
     if (!user) {
@@ -112,7 +115,7 @@ export const loginUser = async (req:Request<{},{},LoginBody>, res:Response):Prom
       email: user.email,
     },
     res
-  );
+    );
 
     user.lastLogin = new Date();
     await user.save();
@@ -121,11 +124,10 @@ export const loginUser = async (req:Request<{},{},LoginBody>, res:Response):Prom
       user: user._id,
     });
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       email: user.email,
       role: user.role,
-      token,
       fullName: user.fullName,
     });
   } catch (err:unknown) {

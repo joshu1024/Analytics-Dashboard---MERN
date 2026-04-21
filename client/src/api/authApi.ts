@@ -21,7 +21,7 @@ export const loginApi = async (formData:LoginRequest):Promise<LoginResponse> => 
     throw err.response?.data?.message || "Registration failed";
   }
 };
-export const loginOut = async ():Promise<LogoutResponse> => {
+export const logOut = async ():Promise<LogoutResponse> => {
   try {
     const { data } = await api.post<LogoutResponse>("/auth/logout");
     return data;

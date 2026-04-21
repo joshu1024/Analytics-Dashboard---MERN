@@ -7,8 +7,9 @@ interface Props{
   children:ReactNode
 }
 const ProtectedRoute:FC<Props> = ({ children }) => {
-  const { token } = useSelector((state:Rootstate) => state.auth);
-  if (!token) return <Navigate to="/login" replace />;
+  const { user } = useSelector((state: Rootstate) => state.auth);
+
+if (!user) return <Navigate to="/login" replace />;
   return children;
 };
 

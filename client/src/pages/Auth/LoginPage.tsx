@@ -18,8 +18,10 @@ const LoginPage = () => {
 
   const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const result = await dispatch(loginUser(form));
     if (loginUser.fulfilled.match(result)) {
+
       navigate("/");
     }
   };

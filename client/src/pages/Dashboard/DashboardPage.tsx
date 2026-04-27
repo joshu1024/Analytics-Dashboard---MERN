@@ -4,21 +4,31 @@ import PlanBreakdownChart from "../components/Charts/PlanBreakdownChart";
 import RevenueChart from "../components/Charts/RevenueChart";
 import UserGrowthChart from "../components/Charts/UserGrowthChart";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { fetchDashboardKPIs } from "../../store/slices/dashboardSlice";
-import { AppDispatch } from "../../store";
+import { useAppSelector } from "../../store";
+import { useAppDispatch } from "../../store/hooks";
 
 const DashboardPage = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  useEffect(() => {
-     dispatch(fetchDashboardKPIs());
-  }, [dispatch]);
-  console.log(import.meta.env.VITE_API_URL);
+const dispatch = useAppDispatch();
+const { user } = useAppSelector((state) => state.auth);
+const { loading, error } = useAppSelector((state) => state.dashboard);
+
+if (loading) return <div>Loading dashboard...</div>;
+if (error) return <div>Error: {error}</div>;
+
+useEffect(() => {
+  if (!user) return;
+  dispatch(fetchDashboardKPIs());
+}, [user]);
 
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">Dashboard Overview</h2>
-
+        {error && (
+        <div className="text-red-500">
+          Failed to load dashboard data. Please try again.
+        </div>
+      )}
       {/* TOP KPIs */}
       <StatsCards />
 

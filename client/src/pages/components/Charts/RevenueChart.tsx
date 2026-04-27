@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import {
   LineChart,
   Line,
@@ -7,10 +6,22 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Rootstate } from "../../../store";
+import { useAppSelector } from "../../../store";
 
+interface RevenuePoint {
+  month: string;
+  revenue: number;
+}
 const RevenueChart = () => {
-  const { revenueChart } = useSelector((state:Rootstate) => state.dashboard.kpis);
+  const { kpis, loading, error } = useAppSelector((state) => state.dashboard);
+  const revenueChart:RevenuePoint[] = kpis?.revenueChart ?? [];
+
+  if (!revenueChart?.length) {
+  return <div className="text-gray-500">No revenue data available</div>;
+}
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+
   return (
     <div className="bg-white p-4 rounded shadow">
       <h3 className="font-semibold mb-2">Revenue Growth</h3>

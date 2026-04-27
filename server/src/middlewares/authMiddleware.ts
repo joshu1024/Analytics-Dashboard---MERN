@@ -1,8 +1,13 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
+interface IUserPayload{
+  id:string,
+  email:string,
+  role:string
+}
 export interface AuthRequest extends Request {
-  user?: JwtPayload | string; 
+  user?: IUserPayload
 }
 
 export const protect = async (
@@ -11,22 +16,23 @@ export const protect = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader?.startsWith("Bearer ")) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
-    }
 
-    const token = authHeader.split(" ")[1];
+    let token:string | undefined;
+    if(req.cookies?.jwt){
+       token = req.cookies.jwt
+    }
+    
+   else if (req.headers.authorization?.startsWith("Bearer ")) {
+       token = req.headers.authorization.split(" ")[1]
+    }
 
     if (!token) {
       res.status(401).json({ error: "Unauthorized" });
       return;
     }
 
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-    req.user = decoded; // store decoded payload in req.user
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as IUserPayload
+    req.user = decoded; 
 
     next();
   } catch (err: unknown) {

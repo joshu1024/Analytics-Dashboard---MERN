@@ -5,8 +5,8 @@ export interface KPI {
   mrr:number;
   revenueChart: RevenuePoint[]
   recentActivity: RecentActivity[],
-  planBreakDown: planBreakDown[],
-  data: UserGrowthPoint[],
+  planBreakDown: PlanBreakdown[],
+  userGrowthData: UserGrowthPoint[],
 }
 
 export interface DashboardState {
@@ -24,7 +24,7 @@ export interface RecentActivity {//
   message: string;
   time?: string;
 }
-export interface planBreakDown{
+export interface PlanBreakdown{
   [key: string]: string | number;
     name: string;
     value: number;

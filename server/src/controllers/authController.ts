@@ -1,4 +1,5 @@
 import  { generateTokenAndSetCookie } from"../config/generateToken"
+import { AuthRequest } from "../middlewares/authMiddleware"
 import  Event from"../models/Event"
 import  userModel from"../models/userModel"
 import  bcrypt from"bcryptjs"
@@ -34,10 +35,16 @@ export const registerUser = async (req:Request<{},{},RegisterBody>, res:Response
       country,
       gender,
     } = req.body;
-    const existingUser = await userModel.findOne({ email });
+   
+    const existingUser = await userModel.findOne({$or:[{ email },{username}]});
     if (existingUser) {
-       res.status(400).json({ error: "User already exists" });
+       res.status(400).json({ error: "Email or username already exists" });
        return
+    }
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      res.status(400).json({ error: "Password must be at least 8 characters and include a number, uppercase letter, and special character" });
+      return;
     }
     if (password !== confirmPassword) {
        res.status(400).json({ error: "both passwords must match" });
@@ -57,7 +64,7 @@ export const registerUser = async (req:Request<{},{},RegisterBody>, res:Response
       gender,
     });
 
-    const token = generateTokenAndSetCookie(
+     generateTokenAndSetCookie(
       {
         id: newUser._id.toString(),
         role: newUser.role,
@@ -66,12 +73,12 @@ export const registerUser = async (req:Request<{},{},RegisterBody>, res:Response
       res
     );
 
-    await Event.create({
-      type: "User Registration",
-      user: newUser._id,
-    });
-    if (newUser) {
-      res.status(200).json({
+      await Event.create({
+        type: "User Registration",
+        user: newUser._id,
+      });
+    
+      res.status(201).json({
         _id: newUser._id,
         fullName:newUser.fullName,
         username: newUser.username,
@@ -82,7 +89,7 @@ export const registerUser = async (req:Request<{},{},RegisterBody>, res:Response
         role:newUser.role,
         gender,
       });
-    }
+    
   } catch (err:unknown) {
     const message = err instanceof Error ? err.message : "Internal server error"
     res.status(500).json({ message});
@@ -91,12 +98,13 @@ export const registerUser = async (req:Request<{},{},RegisterBody>, res:Response
 export const loginUser = async (req:Request<{},{},LoginBody>, res:Response):Promise<void> => {
   try {
     const { email, password } = req.body;
+
     if (!email || !password) {
         res.status(400).json({ error: "Missing fields" });
         return
     }
-
-    const user = await userModel.findOne({ email });
+    const cleanEmail = email.trim().toLowerCase()
+    const user = await userModel.findOne({ email:cleanEmail });
     if (!user) {
        res.status(400).json({ error: "Invalid credentials" });
        return
@@ -108,7 +116,14 @@ export const loginUser = async (req:Request<{},{},LoginBody>, res:Response):Prom
        return
     }
 
-   const token = generateTokenAndSetCookie(
+    user.lastLogin = new Date();
+    await user.save();
+    await Event.create({
+      type: "USER_LOGIN",
+      user: user._id,
+    });
+
+   generateTokenAndSetCookie(
     {
       id: user._id.toString(),
       role: user.role,
@@ -117,14 +132,7 @@ export const loginUser = async (req:Request<{},{},LoginBody>, res:Response):Prom
     res
     );
 
-    user.lastLogin = new Date();
-    await user.save();
-    await Event.create({
-      type: "USER_LOGIN",
-      user: user._id,
-    });
-
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       email: user.email,
       role: user.role,
@@ -135,15 +143,37 @@ export const loginUser = async (req:Request<{},{},LoginBody>, res:Response):Prom
     res.status(500).json({ message});
   }
 };
-
 export const logoutUser = async (req:Request, res:Response):Promise<void> => {
-  try {
-    res.cookie("jwt", "", { maxAge: 0 });
+ 
+    res.cookie("jwt", "", { maxAge: 0,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", });
     res.status(200).json({ message: "Logged out succesfully" });
     return;
-  }catch (err:unknown) {
-    const message = err instanceof Error ? err.message : "Internal server error"
-    res.status(500).json({ message});
+};
+export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+      if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+      }
+    const EXCLUDED_FIELDS = "-password";
+    const user = await userModel.findById(userId).select(EXCLUDED_FIELDS);
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (err: unknown) {
+    const message =
+      err instanceof Error ? err.message : "Internal server error";
+    res.status(500).json({ message });
   }
 };
 export const forgotPassword = async (req:Request<{},{},ForgotPassword>, res:Response):Promise<void> => {

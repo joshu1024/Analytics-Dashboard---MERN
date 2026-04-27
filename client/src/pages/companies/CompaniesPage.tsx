@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { companiesPage } from "../../store/slices/companiesSlice";
 import CompanyTable from "./components/CompanyTable";
 import CompanyDetailPage from "./CompanyDetailPage";
-import { AppDispatch } from "../../store";
+import { AppDispatch, Rootstate } from "../../store";
 import { Company } from "../../types/companies";
 
 const CompaniesPage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-
+  const {user} = useSelector((state:Rootstate)=>state.auth)
   useEffect(() => {
+    if(!user) return;
     dispatch(companiesPage(1));
-  }, [dispatch]);
+  }, [dispatch,user]);
 
   return (
     <div>

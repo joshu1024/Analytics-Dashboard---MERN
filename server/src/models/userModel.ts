@@ -33,4 +33,4 @@ const userSchema = new Schema<IUsermodel>(
 );
 
 const userModel = mongoose.model<IUsermodel>("userModel", userSchema);
- export default userModel;
+ export default userModel;                

@@ -7,13 +7,17 @@ import SubscriptionPlansPage from "./SubscriptionPlansPage";
 import TransactionsPage from "./TransactionsPage";
 import { billingPage } from "../../store/slices/billingSlice.js";
 import { useAppDispatch } from "../../store/hooks";
+import { useSelector } from "react-redux";
+import { Rootstate } from "../../store";
 
 const BillingDashboard = () => {
   const dispatch = useAppDispatch();
+  const {user} = useSelector((state:Rootstate)=>state.auth)
 
   useEffect(() => {
+    if(!user) return
     dispatch(billingPage());
-  }, [dispatch]);
+  }, [dispatch,user]);
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">Billing Dashboard</h2>

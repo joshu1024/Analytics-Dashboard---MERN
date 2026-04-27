@@ -27,12 +27,13 @@ const transactionSchema = new Schema<ITransaction>(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Subscription",
     },
-    amount: { type: Number, required: true },
-    currency: { type: String, default: "USD" },
+    amount: { type: Number, required: true,min:0 },
+    currency: { type: String, default: "USD" ,enum: ["USD", "KES", "EUR", "GBP"]},
     status: {
       type: String,
       enum: ["success", "failed", "pending", "refunded"],
       required: true,
+      index:true
     },
 
     paymentMethod: {

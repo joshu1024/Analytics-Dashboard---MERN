@@ -2,9 +2,12 @@ export interface User {
   fullName: string;
   username?: string;
   email: string;
-  role: string;
+  role: "admin" | "user";
   country?: string;
   gender?: "male" | "female";
+   _id?: string;
+  isActive?: boolean;
+  lastLogin?: Date | null;
 }
 
 
@@ -14,9 +17,8 @@ export interface RegisterRequest {
   email: string;
   password: string;
   confirmPassword: string;
-  role: string;
   country: string;
-  gender: "male" | "female" | "";
+  gender?: "male" | "female" 
 }
 
 export interface LoginRequest {
@@ -24,36 +26,21 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface RegisterResponse {
+interface BaseAuthResponse {
+  success: boolean;
+  email: string;
+  role: "admin" | "user";
+  fullName: string;
+  message: string;
+}
+
+export interface LoginResponse extends BaseAuthResponse {}
+
+export interface RegisterResponse extends BaseAuthResponse {
   _id: string;
   username: string;
-  email: string;
   country: string;
   gender: "male" | "female";
-  token: string;
-  success: boolean;
-  message: string;
-  fullName:string,
-  role:string
 }
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  success: boolean;
-  email: string;
-  role: string;
-  token: string;
-  fullName: string;
-  message?: string; 
-}
-
-
-export interface LogoutResponse {
-  message: string;
-}
-
 
 

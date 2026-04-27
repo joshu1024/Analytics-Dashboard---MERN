@@ -65,7 +65,7 @@ export const getBillingOverview = async (
       .populate("user", "fullName email")
       .exec();
 
-    res.status(200).json({
+    res.status(201).json({
       subscriptions,
       monthlyRevenue,
       recentTransactions,

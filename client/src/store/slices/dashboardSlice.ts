@@ -1,24 +1,19 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { fetchDashboardKPIsApi } from "../../api/dashboardApi.js";
 import { DashboardState, KPI } from "../../types/dashboard.js";
-import { Rootstate } from "../index.js";
+import api from "../../api/api.js";
+import { AxiosError } from "axios";
 
-export const fetchDashboardKPIs = createAsyncThunk<KPI,void,{state:Rootstate,rejectValue:string}>(
+export const fetchDashboardKPIs = createAsyncThunk<KPI, void, { rejectValue: string }>(
   "dashboard/fetchKPIs",
-  async (_, { getState, rejectWithValue }) => {
-    const token = getState().auth.token;
-    if (!token) {
-      return rejectWithValue("User not authenticated");
-    }
+  async (_, { rejectWithValue }) => {
     try {
-      const data = await fetchDashboardKPIsApi(token);
-
+      const { data } = await api.get<KPI>("/dashboard/kpis");
       return data;
-    } catch (error:unknown) {
-      if(error instanceof Error) return rejectWithValue(error.message)
-     return rejectWithValue("Failed to fetch dashboard KPIs");
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch dashboard KPIs");
     }
-  },
+  }
 );
  const initialState:DashboardState = {
     kpis: {
@@ -29,7 +24,7 @@ export const fetchDashboardKPIs = createAsyncThunk<KPI,void,{state:Rootstate,rej
       revenueChart: [],
       recentActivity: [],
       planBreakDown: [],
-      data: [],
+      userGrowthData: [],
     },
     loading: false,
     error: null,
@@ -45,7 +40,7 @@ const dashboardSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchDashboardKPIs.fulfilled, (state, action:PayloadAction<KPI>) => {
+      .addCase(fetchDashboardKPIs.fulfilled, (state, action) => {
         state.loading = false;
         state.kpis = action.payload;
       })

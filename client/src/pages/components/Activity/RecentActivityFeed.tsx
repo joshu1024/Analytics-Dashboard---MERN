@@ -1,14 +1,6 @@
-import { useSelector } from "react-redux";
-import { Rootstate } from "../../../store";
+import {  useAppSelector } from "../../../store";
 
-const RecentActivityFeed = () => {
-  const { recentActivity, loading } = useSelector((state:Rootstate) => ({
-    recentActivity: state.dashboard.kpis.recentActivity,
-    loading: state.dashboard.loading,
-  }));
-
-  if (loading) return <p>Loading...</p>;
-  const timeAgo = (date:string | undefined):string => {
+const timeAgo = (date:string | undefined):string => {
     const now = new Date();
     const past = new Date(date ?? Date.now());
 
@@ -16,7 +8,6 @@ const RecentActivityFeed = () => {
 
     let diff = Math.floor((now.getTime() - past.getTime()) / 1000);
 
-    // handle future dates
     if (diff < 0) diff = Math.abs(diff);
 
     const minutes = Math.floor(diff / 60);
@@ -32,17 +23,32 @@ const RecentActivityFeed = () => {
     if (months < 12) return `${months}mo ago`;
     return `${years}y ago`;
   };
+const RecentActivityFeed = () => {
+const { recentActivity, loading, error } = useAppSelector((state) => ({
+  recentActivity: state.dashboard.kpis?.recentActivity ?? [],
+  loading: state.dashboard.loading,
+  error: state.dashboard.error,
+}));
+
+if (loading) return <p>Loading...</p>;
+if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="bg-white rounded shadow p-4">
       <h2 className="font-semibold mb-3">Recent Activity</h2>
       <ul className="space-y-2 text-sm">
-        {recentActivity.map((a, index) => (
-          <li key={index} className="flex justify-between">
-            <span>{a.message}</span>
-            <span className="text-gray-400 text-xs">{timeAgo(a.time)}</span>
-          </li>
-        ))}
+        {recentActivity.length === 0 ? (
+      <p className="text-gray-400 text-sm">No recent activity</p>
+           ) : (
+      recentActivity.map((a, index) => (
+             <li key={`${a.type}-${a.time}-${index}`} className="flex justify-between">
+              <span>{a.type === "transaction" ? "💳" : "👤"}</span>
+                <span>{a.message}</span>
+                <span className="text-gray-400 text-xs">{timeAgo(a.time)}</span>
+              </li>
+            ))
+         )}
+       
       </ul>
     </div>
   );

@@ -1,15 +1,15 @@
-import React from "react";
-import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { useSelector } from "react-redux";
-import { Rootstate } from "../../../store";
-import { planBreakDown } from "../../../types/dashboard";
+import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell, Legend } from "recharts";
+import {  useAppSelector } from "../../../store";
+import { PlanBreakdown } from "../../../types/dashboard";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 const PlanBreakdownChart = () => {
-  const { kpis, loading } = useSelector((state:Rootstate) => state.dashboard);
-  const data:planBreakDown[] = kpis.planBreakDown;
+ const { kpis, loading, error } = useAppSelector((state) => state.dashboard);
   if (loading) return <div className="">Loading...</div>;
-
+  const data:PlanBreakdown[] = kpis?.planBreakDown ?? [];
+ if (!data.length) {
+  return <div className="text-gray-500">No plan data available</div>;
+}
   return (
     <div className="bg-white rounded shadow p-2">
       <h3 className="font-semibold mb-2">Plan Breakdown Chart</h3>
@@ -17,10 +17,11 @@ const PlanBreakdownChart = () => {
         <PieChart>
           <Pie data={data} nameKey="name" dataKey="value" label>
             {data.map((entry, index) => (
-              <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           <Tooltip />
+          <Legend />
         </PieChart>
       </ResponsiveContainer>
     </div>

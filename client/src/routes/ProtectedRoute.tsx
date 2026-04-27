@@ -1,15 +1,21 @@
 import { FC, ReactNode } from "react";
 import { Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { Rootstate } from "../store";
+import { useAppSelector } from "../store";
 
-interface Props{
-  children:ReactNode
+interface Props {
+  children: ReactNode;
 }
-const ProtectedRoute:FC<Props> = ({ children }) => {
-  const { token } = useSelector((state:Rootstate) => state.auth);
-  if (!token) return <Navigate to="/login" replace />;
-  return children;
+
+const ProtectedRoute: FC<Props> = ({ children }) => {
+  const { user, loading } = useAppSelector((state) => state.auth);
+
+  // ✅ Wait for fetchCurrentUser to complete
+  if (loading) return <div>Loading...</div>;
+
+  // ✅ Only redirect after we know user is null
+  if (!user) return <Navigate to="/login" replace />;
+
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

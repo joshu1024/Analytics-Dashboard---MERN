@@ -11,7 +11,7 @@ import { Rootstate } from "../index.js";
 import {AnalyticsState} from "../../types/analytics.js"
 
 
-export const fetchKPIs = createAsyncThunk<KPI,void,{state:Rootstate,rejectValue:string}>(
+export const fetchKPIs = createAsyncThunk<KPI,void,{rejectValue:string}>(
   "analytics/fetchKpis",
   async (_, { getState, rejectWithValue }) => {
     const token = getState().auth.token;

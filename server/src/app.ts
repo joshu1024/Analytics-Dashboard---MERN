@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import helmet from "helmet"
 
 import authRoutes from "./routes/authRoutes";
 import analyticsRoutes from "./routes/analyticsRoutes";
@@ -11,12 +13,10 @@ import settingsRoutes from "./routes/settingsRoutes";
 
 const app = express();
 
-app.use(express.json());
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://dashboard-mern-tau.vercel.app"
-];
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") ?? [
+     "http://localhost:5173"
+   ];
 
 app.use(
   cors({
@@ -30,6 +30,10 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(express.json());
+app.use(cookieParser());
+app.use(helmet())
 
 app.use("/api/auth", authRoutes);
 app.use("/api/analytics", analyticsRoutes);

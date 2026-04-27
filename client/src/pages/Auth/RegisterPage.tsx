@@ -1,12 +1,9 @@
 import { SyntheticEvent, useState } from "react";
-import { registerApi } from "../../api/authApi.js";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {RegisterRequest, RegisterResponse} from "../../types/auth.js"
 import {
-  authStart,
-  authSuccess,
-  authFail,
+   registerUser,
 } from "../../store/slices/authSlice.js";
 import { AppDispatch, Rootstate } from "../../store/index.js";
 
@@ -21,34 +18,17 @@ const RegisterPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "",
     country: "",
     gender: "",
   });
 
-  const handleSubmit = async (e:SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      dispatch(authStart());
-      const data:RegisterResponse = await registerApi(form);
-      dispatch(
-        authSuccess({
-          user: {
-            fullName: data.fullName,
-            username: data.username,
-            email: data.email,
-            role: data.role,
-            country: data.country,
-            gender: data.gender,
-          },
-          token: data.token,
-        }),
-      );
-      navigate("/login");
-    } catch (error) {
-      dispatch(authFail(error as string));
-    }
-  };
+ const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  const result = await dispatch(registerUser(form));
+  if (registerUser.fulfilled.match(result)) {
+    navigate("/");
+  }
+};
 
   return (
     <div className="max-w-md mx-auto bg-white p-6 rounded shadow">
@@ -93,14 +73,7 @@ const RegisterPage = () => {
           }
           className="border p-2 rounded w-full"
         />
-        <input
-          type="text"
-          value={form.role}
-          placeholder="Role"
-          onChange={(e) => setForm({ ...form, role: e.target.value })}
-          className="border p-2 rounded w-full"
-        />
-        <input
+               <input
           type="text"
           value={form.country}
           placeholder="Country"

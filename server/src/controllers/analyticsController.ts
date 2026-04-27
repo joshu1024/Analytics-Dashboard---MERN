@@ -4,6 +4,11 @@ import User from"../models/userModel";
 import Event from"../models/Event";
 
 
+interface QueryParams{
+  type?:string,
+  page?:string,
+  limit?:string
+}
 export const getKPIs = async (req:Request, res:Response):Promise<void> => {
   try {
     const totalUsers = await User.countDocuments();
@@ -95,11 +100,6 @@ export const getUserDemographics = async (req:Request, res:Response):Promise<voi
     
   }
 };
-interface QueryParams{
-  type?:string,
-  page?:string,
-  limit?:string
-}
 export const getRecentEvents = async (req:Request<{},{},{},QueryParams>, res:Response):Promise<void> => {
   try {
     const type = req.query.type;

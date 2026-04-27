@@ -23,10 +23,12 @@ const COLORS = [
 ];
 
 const UserGrowthChart = () => {
-  const { kpis, loading } = useSelector((state:Rootstate) => state.dashboard);
-  const data:UserGrowthPoint[] = kpis.data;
-  if(loading) return <div>Loading!</div>
-  return (
+  const { kpis, loading ,error} = useSelector((state:Rootstate) => state.dashboard);
+  
+ if (loading) return <div>Loading...</div>;
+if (error) return <div className="text-red-500">{error}</div>;
+ const data:UserGrowthPoint[] = kpis?.userGrowthData ?? [];
+ return (
     <div className="bg-white  p-4 rounded shadow">
       <h3 className="">User Growth</h3>
       <ResponsiveContainer width="100%" height={250}>

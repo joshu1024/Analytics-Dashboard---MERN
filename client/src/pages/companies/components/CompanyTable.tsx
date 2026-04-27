@@ -11,8 +11,12 @@ const CompanyTable = ({ onSelectedCompany }:Props) => {
   const { companies, totalPages, page, loading, error } = useSelector(
     (state:Rootstate) => state.companies,
   );
-   if (loading) return <div>Loading...</div>;
-   if (error) return <div className="text-red-500">Error</div>;
+     if (loading && !companies) {
+    return <div>Loading...</div>;
+  }
+  if (error && !companies) {
+    return <div>Error</div>;
+  }
   function handlePageChange(newPage:number) {
     dispatch(companiesPage(newPage));
   }

@@ -33,16 +33,22 @@ const subscriptionSchema = new Schema<ISubscription>(
       type: String,
       enum: ["active", "trialing", "past_due", "cancelled"],
       default: "trialing",
+      index:true
     },
     billingCycle: {
       type: String,
       enum: ["monthly", "yearly"],
       default: "monthly",
     },
-    price: { type: Number, required: true },
-    currency: { type: String, default: "USD" },
-    startDate: { type: Date, default: Date.now },
-    endDate: { type: Date },
+    price: { type: Number, required: true,min:0 },
+    currency: { type: String, default: "USD" ,enum: ["USD", "EUR", "GBP", "KES"]},
+    startDate: { type: Date, default: ()=> new Date() },
+    endDate: { 
+      type: Date,
+      required: function(this: ISubscription) {
+        return this.plan !== "free";
+      }
+    },
     cancelAtPeriodEnd: { type: Boolean, default: false },
     provider: {
       type: String,

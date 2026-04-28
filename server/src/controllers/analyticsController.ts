@@ -12,15 +12,14 @@ interface QueryParams{
 export const getKPIs = async (req:Request, res:Response):Promise<void> => {
   try {
     const totalUsers = await User.countDocuments();
-
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
     const retainedUsers = await User.countDocuments({
-      lastLogin: { $exists: true },
+      lastLogin: { $gte: thirtyDaysAgo },
     });
     const retention =
       totalUsers === 0 ? 0 : Math.round((retainedUsers / totalUsers) * 100);
 
-    const churn = 100 - retention; // percentage of users lost
-    // arpu = totalrev/totalusers,
+    const churn = 100 - retention; 
     const revenueAggregate = await Transaction.aggregate([
       { $match: { status: "success" } },
       { $group: { _id: null, totalRevenue: { $sum: "$amount" } } },
@@ -40,7 +39,6 @@ export const getKPIs = async (req:Request, res:Response):Promise<void> => {
    res.status(500).json({ message });
   }
 };
-
 export const getSignupsByCountry = async (req:Request, res:Response):Promise<void> => {
   try {
     const data2 = await User.aggregate<{_id:string,count:number}>([
@@ -52,36 +50,43 @@ export const getSignupsByCountry = async (req:Request, res:Response):Promise<voi
    res.status(500).json({ message });
   }
 };
+export const getRetentionCurve = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const totalUsers = await User.countDocuments();
+    if (!totalUsers) {
+      res.json([]);
+      return;
+    }
 
-export const getRetentionCurve = async (req:Request, res:Response):Promise<void> => {
-try {
-    const retention:{day:number,value:number}[] = [];
+    const result = await User.aggregate<{ _id: number; count: number }>([
+      { $match: { lastLogin: { $exists: true } } },
+      {
+        $group: {
+          _id: {
+            $dateDiff: {
+              startDate: "$lastLogin",
+              endDate: new Date(),
+              unit: "day",
+            },
+          },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
 
-  const totalUsers = await User.countDocuments();
-  if (!totalUsers) {
-     res.json([]) ;
-     return;
-     }
-  for (let day = 0; day <= 30; day++) {
-    const cutoff = new Date(Date.now() - day * 24 * 60 * 60 * 1000);
+    const countByDay = new Map(result.map((r) => [r._id, r.count]));
 
-    const activeUsers = await User.countDocuments({
-      lastLogin: { $gte: cutoff },
-    });
-
-    retention.push({
+    const retention = Array.from({ length: 31 }, (_, day) => ({
       day,
-      value: Math.round((activeUsers / totalUsers) * 100),
-    });
+      value: Math.round(((countByDay.get(day) ?? 0) / totalUsers) * 100),
+    }));
+
+    res.json(retention);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Internal server error";
+    res.status(500).json({ message });
   }
-
-  res.json(retention);
-} catch (err:unknown) {
-  const message = err instanceof Error ? err.message :"Internal server error"
-   res.status(500).json({ message });
-}
 };
-
 export const getUserDemographics = async (req:Request, res:Response):Promise<void> =>  {
   try {
     const result = await User.aggregate<{_id:string,count:number}>([
@@ -109,8 +114,8 @@ export const getRecentEvents = async (req:Request<{},{},{},QueryParams>, res:Res
    
     const query: { type?: string } = type ? { type } : {};
     
-
-    const events = await Event.find(query)
+    const[events,total] = await Promise.all([
+      Event.find(query)
       .populate({
         path: "user",
         select: "fullName email",
@@ -118,8 +123,11 @@ export const getRecentEvents = async (req:Request<{},{},{},QueryParams>, res:Res
       })
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit);
-        res.json(events);
+      .limit(limit),
+      Event.countDocuments(query)
+
+    ])
+       res.json({events,total,page,totalPages: Math.ceil(total / limit)});
   } catch (err) {
     const message = err instanceof Error ? err.message : "Failed to fetch recent events"
      res.status(500).json({ message });

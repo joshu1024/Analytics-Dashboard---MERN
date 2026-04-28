@@ -1,57 +1,71 @@
 import { createAsyncThunk, createSlice,PayloadAction } from "@reduxjs/toolkit";
-import {
-  fetchAnalyticsKPIsApi,
-  fetchEventsApi,
-  fetchRetentionCurveApi,
-  fetchSignupsByCountryApi,
-  fetchUserDemographicsApi,
-} from "../../api/analyticsApi.js";
-import { KPI, RetentionCurvePoint, SignupByCountry, UserDemographics,Event } from "../../types/analytics";
+import { KPI, RetentionCurvePoint, SignupByCountry, UserDemographics,Event, FetchEventsParams } from "../../types/analytics";
 import { Rootstate } from "../index.js";
 import {AnalyticsState} from "../../types/analytics.js"
+import api from "../../api/api.js";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "../../types/analytics";
 
 
 export const fetchKPIs = createAsyncThunk<KPI,void,{rejectValue:string}>(
   "analytics/fetchKpis",
-  async (_, { getState, rejectWithValue }) => {
-    const token = getState().auth.token;
-    if (!token) return rejectWithValue("Failed to load KPIs data");
-    return await fetchAnalyticsKPIsApi(token);
+  async (_, { rejectWithValue }) => {
+    
+    try {
+      const { data } = await api.get<KPI>("/analytics/kpis");
+      return data;
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      return rejectWithValue(error.response?.data?.message || "Failed to load KPIs");
+    }
   },
-);
-export const fetchRetentionCurve = createAsyncThunk<RetentionCurvePoint[],void,{state:Rootstate,rejectValue:string}>(
+);  
+export const fetchRetentionCurve = createAsyncThunk<RetentionCurvePoint[],void,{rejectValue:string}>(
   "analytics/fetchRetention",
-  async (_, { getState, rejectWithValue }) => {
-    const token = getState().auth.token;
-    if (!token) return rejectWithValue("No auth token found");
-    return await fetchRetentionCurveApi(token);
+  async (_, { rejectWithValue }) => {
+   try {
+    const {data} = await api.get<RetentionCurvePoint[]>("/analytics/retention");
+   return data
+   } catch (err) {
+    const error = err as AxiosError<ErrorResponse>;
+    return rejectWithValue(error.response?.data?.message || "Failed to load Retension curve")
+   }
   },
 );
-export const fetchSignupsByCountry = createAsyncThunk<SignupByCountry[],void,{state:Rootstate,rejectValue:string}>(
+export const fetchSignupsByCountry = createAsyncThunk<SignupByCountry[],void,{rejectValue:string}>(
   "analytics/fetchSignUp",
-  async (_, { getState, rejectWithValue }) => {
-    const token = getState().auth.token;
-    if (!token) return rejectWithValue("Failed to fetch signups by country data");
-
-    return await fetchSignupsByCountryApi(token);
+   async (_, {  rejectWithValue }) => {
+   try {
+    const {data} = await api.get<SignupByCountry[]>("/analytics/signup-bycountry");
+   return data
+   } catch (err) {
+    const error = err as AxiosError<ErrorResponse>;
+    return rejectWithValue(error.response?.data?.message || "Failed to load signups by country")
+   }
   },
 );
-export const fetchUserDemographics = createAsyncThunk<UserDemographics[],void,{state:Rootstate,rejectValue:string}>(
+export const fetchUserDemographics = createAsyncThunk<UserDemographics[],void,{rejectValue:string}>(
   "analytics/fetchUserDemographics",
-  async (_, { getState, rejectWithValue }) => {
-    const token = getState().auth.token;
-    if (!token) return rejectWithValue("Failed to fetch user demographics data");
-
-    return await fetchUserDemographicsApi(token);
+ async (_, { rejectWithValue }) => {
+   try {
+    const {data} = await api.get<UserDemographics[]>("/analytics/user-demographics");
+   return data
+   } catch (err) {
+    const error = err as AxiosError<ErrorResponse>;
+    return rejectWithValue(error.response?.data?.message || "Failed to load user demographics")
+   }
   },
 );
-export const fetchEvents = createAsyncThunk<Event[],void,{state:Rootstate,rejectValue:string}>(
+export const fetchEvents = createAsyncThunk<Event[],FetchEventsParams,{rejectValue:string}>(
   "analytics/fetchEvents",
-  async (_, { getState, rejectWithValue }) => {
-    const token = getState().auth.token;
-    if (!token) return rejectWithValue("Failed to load Events data") as any;
-
-    return await fetchEventsApi(token);
+ async ({ page, limit }, { rejectWithValue }) => {
+   try {
+    const {data} = await api.get<Event[]>("/analytics/events",{params:{page,limit}});
+   return data
+   } catch (err) {
+    const error = err as AxiosError<ErrorResponse>;
+    return rejectWithValue(error.response?.data?.message || "Failed to load events")
+   }
   },
 );
  const initialState:AnalyticsState ={
@@ -77,9 +91,10 @@ const analyticsSlice = createSlice({
     builder
       .addCase(fetchKPIs.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchKPIs.fulfilled, (state, action:PayloadAction<KPI>) => {
-        ((state.loading = false), (state.kpis = action.payload));
+       state.loading = false, state.kpis = action.payload;
       })
       .addCase(fetchKPIs.rejected, (state, action) => {
         state.error = action.payload;
@@ -98,7 +113,7 @@ const analyticsSlice = createSlice({
       .addCase(fetchSignupsByCountry.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchSignupsByCountry.fulfilled, (state, action:PayloadAction<SignupByCountry[]>) => {
+      .addCase(fetchSignupsByCountry.fulfilled, (state, action) => {
         state.loading = false;
         state.data2 = action.payload;
       })
@@ -109,7 +124,7 @@ const analyticsSlice = createSlice({
       .addCase(fetchUserDemographics.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchUserDemographics.fulfilled, (state, action:PayloadAction<UserDemographics[]>) => {
+      .addCase(fetchUserDemographics.fulfilled, (state, action) => {
         state.loading = false;
         state.demographics = action.payload;
       })
@@ -120,7 +135,7 @@ const analyticsSlice = createSlice({
       .addCase(fetchEvents.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchEvents.fulfilled, (state, action:PayloadAction<Event[]>) => {
+      .addCase(fetchEvents.fulfilled, (state, action) => {
         state.loading = false;
         state.events = action.payload;
       })

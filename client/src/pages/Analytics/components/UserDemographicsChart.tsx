@@ -1,11 +1,6 @@
-import React from "react";
-import { useSelector } from "react-redux";
 import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import {Rootstate} from "../../../store"
-
-const UserDemographicsChart = () => {
-  const { demographics, loading } = useSelector((state:Rootstate) => state.analytics);
-  const COLORS = [
+import { useAppSelector} from "../../../store"
+ const COLORS = [
     "#8884d8",
     "#82ca9d",
     "#ffc658",
@@ -14,7 +9,12 @@ const UserDemographicsChart = () => {
     "#a4de6c",
     "#893F45",
   ];
-  if (loading) return <p>Loading kpi data...</p>;
+const UserDemographicsChart = () => {
+  const { demographics, loading, error } = useAppSelector((state) => state.analytics);
+
+  if (!demographics.length) return <p className="text-gray-400">No demographics data available</p>;
+  if (loading) return <p>Loading demographics data...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="bg-white p-4 rounded shadow mb-6">
@@ -23,7 +23,7 @@ const UserDemographicsChart = () => {
         <PieChart>
           <Pie data={demographics} dataKey="value" nameKey="name" label>
             {demographics.map((entry, index) => (
-              <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              <Cell key={entry.value} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           <Tooltip />

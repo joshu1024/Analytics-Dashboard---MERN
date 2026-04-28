@@ -13,7 +13,7 @@ interface ResetPasswordArgs{
 token:string,
 password:string
 }
-interface ErrorResponse{
+export interface ErrorResponse{
   message:string
 }
 export const loginUser = createAsyncThunk<User, LoginRequest, { rejectValue: string }>(

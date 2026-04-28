@@ -7,7 +7,6 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { useSelector } from "react-redux";
 import { LabelList } from "recharts";
 const COLORS = [
   "#8884d8",
@@ -18,15 +17,16 @@ const COLORS = [
   "#a4de6c",
   "#893F45",
 ];
-import {Rootstate} from  "../../../store"
+import { useAppSelector} from  "../../../store"
 import { SignupByCountry } from "../../../types/analytics";
 const SignupsByCountryMap = () => {
-  const { data2 = [], loading } = useSelector((state:Rootstate) => state.analytics);
+ const { data2, loading, error } = useAppSelector((state) => state.analytics);
+  if (error) return <p className="text-red-500">{error}</p>;
   if (loading) return <p>Loading signups by country data...</p>;
-  const info = (data2 as SignupByCountry[])
+  const info = data2
     .map((d) => ({ country: d._id, count: d.count }))
     .sort((a, b) => b.count - a.count);
-
+  if (!info.length) return <p className="text-gray-400">No signup data available</p>;
   return (
     <div className="bg-white p-4 rounded shadow mb-6">
       <h3 className="font-semibold mb-2">Signups by Country</h3>
@@ -44,7 +44,7 @@ const SignupsByCountryMap = () => {
           <Bar dataKey="count" barSize={24}>
             <LabelList dataKey="count" position="top" />
             {info.map((_, index) => (
-              <Cell key={index} fill={COLORS[index % COLORS.length]} />
+            <Cell key={info[index].country} fill={COLORS[index % COLORS.length]} />
             ))}
           </Bar>
         </BarChart>

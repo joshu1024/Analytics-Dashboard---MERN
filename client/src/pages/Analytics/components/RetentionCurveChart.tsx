@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -7,11 +6,12 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import api from "../../../api/api.js";
-import { useSelector } from "react-redux";
-import {Rootstate} from "../../../store/index.js"
+import { useAppSelector} from "../../../store/index.js"
 const RetentionCurveChart = () => {
-  const { data = [], loading } = useSelector((state:Rootstate) => state.analytics);
+const { data, loading, error } = useAppSelector((state) => state.analytics);
+if (!data.length) return <p className="text-gray-400">No retention data available</p>;
+if (loading) return <p>Loading retention data...</p>;
+if (error) return <p className="text-red-500">{error}</p>;
 
   if (loading) return <p>Loading retention data...</p>;
 

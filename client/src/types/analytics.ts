@@ -4,7 +4,9 @@ export interface RetentionCurvePoint {
   day: number;
   value: number;
 }
-
+export interface ErrorResponse{
+  message:string
+}
 export interface KPI {
   totalUsers: number;
   churn: number;
@@ -12,7 +14,10 @@ export interface KPI {
   arpu: number;
   retention:number
 }
-
+export interface FetchEventsParams {
+  page: number;
+  limit: number;
+}
 export interface Event {
   _id: string;
   type: string;
@@ -25,6 +30,7 @@ export interface Event {
 export interface UserDemographics {
   name: string;
   value: number;
+  [key: string]: string | number;
 }
 
 export interface AnalyticsState {
@@ -34,7 +40,8 @@ export interface AnalyticsState {
   demographics: UserDemographics[];
   events: Event[];
   loading: boolean;
-  error: string | null | undefined;
+  error: string | null;
+  mrr?: number;
 }
 export interface SignupByCountry {
   _id: string;  

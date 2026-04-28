@@ -1,20 +1,19 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchcompaniesPageApi } from "../../api/fetchcompaniesPageApi.js";
-import { Company, CompanyResponse } from "../../types/companies.js";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { Company, CompanyResponse, ErrorResponse } from "../../types/companies.js";
 import { Rootstate } from "../index.js";
+import api from "../../api/api.js";
+import { AxiosError } from "axios";
 
 export const companiesPage = createAsyncThunk<CompanyResponse,number | undefined,{state:Rootstate,rejectValue:string}>(
   "company/fetchKPI",
-  async (page = 1, { getState, rejectWithValue }) => {
-    const token = getState().auth.token;
-    if (!token) return rejectWithValue("User not authenticated");
-    try {
-      const data = await fetchcompaniesPageApi(token, page);
-      return data;
-    } catch (error:unknown) {
-     if(error instanceof Error) return rejectWithValue(error.message)
-      return rejectWithValue("Failed to fetch company data");
-    }
+ async (page = 1, { rejectWithValue }) => {
+   try {
+    const {data} = await api.get<CompanyResponse>(`/companies`,{params:{page}})
+    return data
+   } catch (err:unknown) {
+    const error = err as AxiosError<ErrorResponse>
+    return rejectWithValue(error.response?.data?.message || "error fetching companies")
+   }
   },
 );
 interface CompaniesState{
@@ -23,7 +22,7 @@ interface CompaniesState{
     total: number,
     totalPages: number,
     loading: boolean,
-    error: null | string | undefined,
+    error: null | string,
 }
   const initialState:CompaniesState =  {
     companies: [],
@@ -41,13 +40,14 @@ const companySlice = createSlice({
     builder
       .addCase(companiesPage.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
-      .addCase(companiesPage.fulfilled, (state, action:PayloadAction<CompanyResponse>) => {
-        ((state.loading = false),
-          (state.companies = action.payload.companies),
-          (state.total = action.payload.total),
-          (state.totalPages = action.payload.totalPages),
-          (state.page = action.payload.page));
+      .addCase(companiesPage.fulfilled, (state, action) => {
+        state.loading = false;
+          state.companies = action.payload.companies;
+          state.total = action.payload.total;
+          state.totalPages = action.payload.totalPages;
+          state.page = action.payload.page;
       })
       .addCase(companiesPage.rejected, (state, action) => {
         state.loading = false

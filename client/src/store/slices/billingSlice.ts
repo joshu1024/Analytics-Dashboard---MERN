@@ -1,17 +1,23 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getBillingApi } from "../../api/billinPageApi.js";
-import { billingOverviewResponse } from "../../types/billing.js";
+import { billingOverviewResponse, BillingState } from "../../types/billing.js";
 import { Rootstate } from "../index.js";
+import api from "../../api/api.js";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "../../types/billing";
 
 export const billingPage = createAsyncThunk<billingOverviewResponse,void,{state:Rootstate,rejectValue:string}>(
   "billing/fetchKpis",
-  async (_, { getState, rejectWithValue }) => {
-    const token = getState().auth.token;
-    if (!token) return rejectWithValue("Error loading billing page Api");
-    return await getBillingApi(token);
+  async (_, { rejectWithValue }) => {
+   try {
+    const {data} = await api.get<billingOverviewResponse>("/billing/overview")
+    return data
+   } catch (err:unknown) {
+    const error = err as AxiosError<ErrorResponse>
+    return rejectWithValue(error.response?.data?.message || "error fetching KPIs")
+   }
   },
 );
-const  initialState:billingOverviewResponse = {
+const  initialState:BillingState = {
     monthlyRevenue: 0,
     subscriptions: {
       active: 0,
@@ -32,9 +38,10 @@ const billingSlice = createSlice({
     builder
       .addCase(billingPage.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(billingPage.fulfilled, (state, action) => {
-        state.loading = false,
+        state.loading = false;
         state.monthlyRevenue = action.payload.monthlyRevenue;
         state.subscriptions = action.payload.subscriptions;
         state.recentTransactions = action.payload.recentTransactions;

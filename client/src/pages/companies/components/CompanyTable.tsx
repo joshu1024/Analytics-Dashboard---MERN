@@ -1,6 +1,5 @@
-import { useSelector, useDispatch } from "react-redux";
 import { companiesPage } from "../../../store/slices/companiesSlice.js";
-import { Rootstate } from "../../../store/index.js";
+import {  useAppSelector } from "../../../store/index.js";
 import { Company } from "../../../types/companies.js";
 import { useAppDispatch } from "../../../store/hooks.js";
 interface Props {
@@ -8,18 +7,14 @@ interface Props {
 }
 const CompanyTable = ({ onSelectedCompany }:Props) => {
   const dispatch = useAppDispatch();
-  const { companies, totalPages, page, loading, error } = useSelector(
-    (state:Rootstate) => state.companies,
+  const { companies, totalPages, page, loading, error } = useAppSelector(
+    (state) => state.companies,
   );
-     if (loading && !companies) {
-    return <div>Loading...</div>;
-  }
-  if (error && !companies) {
-    return <div>Error</div>;
-  }
-  function handlePageChange(newPage:number) {
-    dispatch(companiesPage(newPage));
-  }
+    if (loading && companies.length === 0) return <div>Loading...</div>;
+    if (error) return <div className="text-red-500">{error}</div>;
+      function handlePageChange(newPage:number) {
+        dispatch(companiesPage(newPage));
+      }
 
   return (
     <div className="relative">
@@ -44,13 +39,7 @@ const CompanyTable = ({ onSelectedCompany }:Props) => {
               <td className="py-2 font-medium">{c.name}</td>
               <td>{c.industry}</td>
               <td
-                className={`${
-                  c.status === "Active"
-                    ? "text-green-600"
-                    : c.status === "Pending"
-                      ? "text-yellow-600"
-                      : "text-red-600"
-                }`}
+                className={`text-sm ${c.status === "Active" ? "text-green-600" : "text-yellow-600"}`}
               >
                 {c.status}
               </td>

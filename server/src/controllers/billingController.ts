@@ -21,34 +21,23 @@ export const getBillingOverview = async (
   try {
    
     const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-
+    const SET_LIMIT = 5
     const revenueResult = await Transaction.aggregate<{ _id: null; totalRevenue: number }>([
       { $match: { createdAt: { $gte: startOfMonth }, status: "success" } },
       { $group: { _id: null, totalRevenue: { $sum: "$amount" } } },
     ]);
     const monthlyRevenue = revenueResult[0]?.totalRevenue ?? 0;
 
-   
-    const subscriptionStats = await Subscription.aggregate<{ _id: string; count: number }>([
+   const [subscriptionStats,recentTransactions,plans,failedPayments] = await Promise.all([
+    Subscription.aggregate<{ _id: string; count: number }>([
       { $group: { _id: "$status", count: { $sum: 1 } } },
-    ]);
-
-    const subscriptions: SubscriptionSummary = { active: 0, cancelled: 0, trialing: 0 };
-    subscriptionStats.forEach((s) => {
-      if (s._id in subscriptions) {
-        subscriptions[s._id as keyof SubscriptionSummary] = s.count;
-      }
-    });
-
-   
-    const recentTransactions: ITransaction[] = await Transaction.find()
+    ]),
+    Transaction.find()
       .sort({ createdAt: -1 })
-      .limit(5)
+      .limit(SET_LIMIT)
       .populate("user", "fullName email")
-      .exec();
-
-
-    const plans: PlanSummary[] = await Subscription.aggregate<PlanSummary>([
+      .exec(),
+    Subscription.aggregate<PlanSummary>([
       { $sort: { price: 1 } },
       {
         $group: {
@@ -57,15 +46,23 @@ export const getBillingOverview = async (
           billingCycle: { $first: "$billingCycle" },
         },
       },
-    ]);
-
-  
-    const failedPayments: ITransaction[] = await Transaction.find({ status: "failed" })
+    ]),
+    await Transaction.find({ status: "failed" })
       .sort({ createdAt: -1 })
+      .limit(SET_LIMIT)
       .populate("user", "fullName email")
-      .exec();
+      .exec()
 
-    res.status(201).json({
+   ])
+    
+    const subscriptions: SubscriptionSummary = { active: 0, cancelled: 0, trialing: 0 };
+    subscriptionStats.forEach((s) => {
+      if (s._id in subscriptions) {
+        subscriptions[s._id as keyof SubscriptionSummary] = s.count;
+      }
+    });
+    
+    res.status(200).json({
       subscriptions,
       monthlyRevenue,
       recentTransactions,

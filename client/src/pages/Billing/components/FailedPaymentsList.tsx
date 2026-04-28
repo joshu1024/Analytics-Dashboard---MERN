@@ -1,9 +1,8 @@
-import { useSelector } from "react-redux";
-import { Rootstate } from "../../../store";
+import {  useAppSelector } from "../../../store";
 
 const FailedPaymentsList = () => {
-  const { failedPayments, loading, error } = useSelector(
-    (state:Rootstate) => state.billing,
+  const { failedPayments, loading, error } = useAppSelector(
+    (state) => state.billing,
   );
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">Error</div>;
@@ -32,7 +31,7 @@ const FailedPaymentsList = () => {
                 </p>
               </div>
 
-              <p className="text-red-500 font-semibold">USD {tx.amount}</p>
+              <p className="text-red-500 font-semibold">{tx.currency} {tx.amount}</p>
             </li>
           ))}
         </ul>

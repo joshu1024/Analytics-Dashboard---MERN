@@ -1,19 +1,8 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { ResponsiveContainer, Pie, PieChart, Tooltip, Cell } from "recharts";
-import { Rootstate } from "../../../store";
 
-const SubscriptionChart = () => {
-  const { subscriptions, loading, error } = useSelector(
-    (state:Rootstate) => state.billing,
-  );
-  if (loading) return <div>Loading..</div>;
-  if (error) return <div className="text-red-500">Error</div>;
-  const data = Object.entries(subscriptions).map(([status, count]) => ({
-    name: status,
-    value: count,
-  }));
-  const COLORS = [
+import { ResponsiveContainer, Pie, PieChart, Tooltip, Cell } from "recharts";
+import {  useAppSelector } from "../../../store";
+
+ const COLORS = [
     "#8884d8",
     "#a4de6c",
     "#ff8042",
@@ -22,6 +11,17 @@ const SubscriptionChart = () => {
     "#ffc658",
     "#893F45",
   ];
+const SubscriptionChart = () => {
+  const { subscriptions, loading, error } = useAppSelector(
+    (state) => state.billing,
+  );
+  if (loading) return <div>Loading..</div>;
+  if (error) return <div className="text-red-500">Error</div>;
+  const data = Object.entries(subscriptions).map(([status, count]) => ({
+    name: status,
+    value: count,
+  }));
+ 
   return (
     <div className="bg-white p-4 rounded shadow">
       <h3 className="font-semibold mb-2">Subscriptions</h3>

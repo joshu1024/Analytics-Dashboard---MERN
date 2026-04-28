@@ -14,3 +14,6 @@ export interface CompanyResponse{
     total: number,
     totalPages: number,
 }
+export interface ErrorResponse{
+  message:string
+}

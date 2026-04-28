@@ -37,7 +37,6 @@ try {
   })
 }
 };
-
 export const updateUserRole = async (req:Request<UserParams,{},UpdateUserRoleBody>, res:Response<IUsermodel | {error:string}>):Promise<void> => {
  try {
    const { role } = req.body;

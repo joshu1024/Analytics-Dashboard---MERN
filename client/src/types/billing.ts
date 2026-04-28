@@ -8,6 +8,9 @@ export interface User{
     _id:string,
     fullName:string
 }
+export interface ErrorResponse{
+  message:string
+}
 export interface ITransaction{
     _id:string,
      user?:User,
@@ -29,6 +32,8 @@ export interface billingOverviewResponse{
     recentTransactions: ITransaction[],
     failedPayments: ITransaction[],
     plans: Plan[],
-    loading: boolean,
-    error:string | null | undefined,
+}
+export interface BillingState extends billingOverviewResponse {
+  loading: boolean;
+  error: string | null;
 }

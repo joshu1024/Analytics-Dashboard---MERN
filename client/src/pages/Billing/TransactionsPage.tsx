@@ -1,12 +1,11 @@
-import { useSelector } from "react-redux";
-import { Rootstate } from "../../store";
+import {  useAppSelector } from "../../store";
 
 const TransactionsPage = () => {
-  const { recentTransactions, loading, error } = useSelector(
-    (state:Rootstate) => state.billing,
+  const { recentTransactions, loading, error } = useAppSelector(
+    (state) => state.billing,
   );
   if (loading) return <div>Loading...</div>;
-  if (error) return <div className="text-red-500">Error</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
   return (
     <div className="bg-white p-4 rounded shadow">
       <h2 className="text-xl font-semibold mb-4">Transactions</h2>

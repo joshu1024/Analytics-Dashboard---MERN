@@ -1,10 +1,8 @@
-import React from "react";
 import PlanSelect from "./components/PlanSelect";
-import { useSelector } from "react-redux";
-import { Rootstate } from "../../store";
+import {  useAppSelector } from "../../store";
 
 const SubscriptionPlansPage = () => {
-  const { plans, loading, error } = useSelector((state:Rootstate) => state.billing);
+  const { plans, loading, error } = useAppSelector((state) => state.billing);
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">Error</div>;
 
@@ -12,9 +10,14 @@ const SubscriptionPlansPage = () => {
     <div>
       <h3 className="text-xl font-semibold mb-4">Subscription plans</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {plans.map((plan) => (
+        {plans.length === 0 ? (
+            <p className="text-gray-500">No plans available</p>
+          ) : (
+            plans.map((plan) => (
           <PlanSelect key={plan._id} plan={plan} />
-        ))}
+        ))
+          )}
+        
       </div>
     </div>
   );

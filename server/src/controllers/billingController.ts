@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import Transaction, { ITransaction } from "../models/Transaction";
-import Subscription, { ISubscription } from "../models/Subscription";
+import Transaction from "../models/Transaction";
+import Subscription from "../models/Subscription";
 
 interface SubscriptionSummary {
   active: number;

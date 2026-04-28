@@ -9,7 +9,9 @@ export interface UserFiltersProps {
   role: string;
   setRole: React.Dispatch<React.SetStateAction<string>>;
 }
-
+export interface ErrorResponse{
+  message:string
+}
 export interface User{
     _id:string,
     id?:string,

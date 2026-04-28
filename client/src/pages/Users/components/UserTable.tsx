@@ -1,8 +1,7 @@
-import React, { useEffect ,FC} from "react";
-import { useSelector, useDispatch } from "react-redux";
+import{ FC} from "react";
 import { fetchUser } from "../../../store/slices/userSlice.js";
 import UserRow from "./UserRow.jsx";
-import { Rootstate } from "../../../store/index.js";
+import {  useAppSelector } from "../../../store/index.js";
 import { useAppDispatch } from "../../../store/hooks.js";
 import { User } from "../../../types/user";
 
@@ -17,10 +16,10 @@ const UserTable:FC<Props> = ({ onSelected }) => {
     totalPages,
     loading,
     error,
-  } = useSelector((state:Rootstate) => state.user);
+  } = useAppSelector((state) => state.user);
 
   function handleUserTable(page:number) {
-    dispatch(fetchUser(page));
+    dispatch(fetchUser({page:1,limit:5}));
   }
 
   if (error) return <p className="p-4 text-red-500">Error: {error}</p>;
@@ -43,7 +42,7 @@ const UserTable:FC<Props> = ({ onSelected }) => {
 
         <tbody>
           {users.map((u) => (
-            <UserRow key={u._id || u.id} user={u} onSelected={onSelected} />
+            <UserRow key={u._id} user={u} onSelected={onSelected} />
           ))}
         </tbody>
       </table>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { UpdateSMTPSettings } from "../../../store/slices/settingsSlice.js";
 import { Rootstate } from "../../../store/index.js";
 import { useAppDispatch } from "../../../store/hooks.js";

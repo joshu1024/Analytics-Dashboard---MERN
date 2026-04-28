@@ -1,40 +1,41 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import {
-  fetchUserApi,
-  UpdateUserRoleApi,
-  UpdateUserStatusApi,
-} from "../../api/usersApi.js";
-import { UpdateRolePayload, User, UserResponse, UserState } from "../../types/user.js";
-import { Rootstate } from "../index.js";
-export const fetchUser = createAsyncThunk<UserResponse,number | undefined,{state:Rootstate,rejectValue:string}>(
+import {  User, UserResponse, UserState } from "../../types/user.js";
+import api from "../../api/api.js";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "../../types/user";
+export const fetchUser = createAsyncThunk<UserResponse,{page:number,limit:number},{rejectValue:string}>(
   "user/kpi",
-  async (page = 1, { getState, rejectWithValue }) => {
-    const token = getState().auth.token;
-    if (!token) return rejectWithValue("User not authenticated");
-
+  async ({page,limit}, { getState, rejectWithValue }) => {
+   try {
+    const {data} = await api.get<UserResponse>("/user",{params:{ page,limit}})
+    return data
+   } catch (err) {
+    const error = err as AxiosError<ErrorResponse>
+    return rejectWithValue(error.response?.data?.message || "Unable to fetch user api")
+   }
+  },
+);
+export const UpdateUserRole = createAsyncThunk<User,{userId:string,role:string},{rejectValue:string}>(
+  "user/UserRole",
+  async ({ userId, role }, { rejectWithValue }) => {
     try {
-      const data = await fetchUserApi(token, page);
-      return data;
-    } catch (error:unknown) {
-     if(error instanceof Error) return rejectWithValue(error.message)
-      return rejectWithValue("Failed to fetch company data");
+      const {data} = await api.patch<User>(`/user/${userId}/role`,{role});
+      return data
+    } catch (err:unknown) {
+      const error = err as AxiosError<ErrorResponse>;
+      return rejectWithValue(error.response?.data?.message || "failed to update user")
     }
   },
 );
-export const UpdateUserRole = createAsyncThunk<User,{userId:string,role:string},{state:Rootstate,rejectValue:string}>(
-  "user/UserRole",
-  async ({ userId, role }, { getState, rejectWithValue }) => {
-    const token = getState().auth.token;
-    if (!token) return rejectWithValue("Error updating user role");
-    return UpdateUserRoleApi({ token, userId, role });
-  },
-);
-export const UpdateUserStatus = createAsyncThunk<User, string, { state: Rootstate,rejectValue:string }>(
+export const UpdateUserStatus = createAsyncThunk<User, string, { rejectValue:string }>(
   "user/UserStatus",
-  async (userId, { getState, rejectWithValue }) => {
-    const token = getState().auth.token;
-    if (!token) return rejectWithValue("Error updating user status");
-    return UpdateUserStatusApi({ token, userId });
+  async (userId, { rejectWithValue }) => {try {
+    const {data} = await api.patch<User>(`/user/${userId}/status`);
+    return data;
+  } catch (err:unknown) {
+    const error = err as AxiosError<ErrorResponse>;
+    return rejectWithValue(error.response?.data?.message || "failed to update user status" )
+  }
   },
 );
 const initialState:UserState =  {
@@ -54,9 +55,10 @@ const userSlice = createSlice({
     builder
       .addCase(fetchUser.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
-        ((state.loading = false), (state.users = action.payload.users));
+        state.loading = false, state.users = action.payload.users;
         state.totalPages = action.payload.totalPages;
         state.page = action.payload.page;
         state.total = action.payload.total;
@@ -70,6 +72,7 @@ const userSlice = createSlice({
         if (user) {
           user.role = role;
         }
+        state.error = null;
       })
       .addCase(UpdateUserRole.fulfilled, (state, action:PayloadAction<User>) => {
         const index = state.users.findIndex(
@@ -78,6 +81,8 @@ const userSlice = createSlice({
         if (index !== -1) {
           state.users[index] = action.payload;
         }
+      }).addCase(UpdateUserRole.rejected, (state, action) => {
+        state.error = action.payload ?? "Failed to update role";
       })
       .addCase(UpdateUserStatus.pending, (state, action) => {
         const userId = action.meta.arg;
@@ -87,14 +92,15 @@ const userSlice = createSlice({
         }
       })
       .addCase(UpdateUserStatus.fulfilled, (state, action) => {
-        console.log("STATUS UPDATED:", action.payload.isActive);
         const index = state.users.findIndex(
           (u) => u._id === action.payload._id,
-        );
+        )
         if (index !== -1) {
           state.users[index] = action.payload;
         }
-      });
+      }).addCase(UpdateUserStatus.rejected, (state, action) => {
+      state.error = action.payload ?? "Failed to toggle status";
+})
   },
 });
 

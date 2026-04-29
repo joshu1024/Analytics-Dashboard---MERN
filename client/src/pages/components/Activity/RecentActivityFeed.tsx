@@ -24,11 +24,9 @@ const timeAgo = (date:string | undefined):string => {
     return `${years}y ago`;
   };
 const RecentActivityFeed = () => {
-const { recentActivity, loading, error } = useAppSelector((state) => ({
-  recentActivity: state.dashboard.kpis?.recentActivity ?? [],
-  loading: state.dashboard.loading,
-  error: state.dashboard.error,
-}));
+const recentActivity = useAppSelector((state) => state.dashboard.kpis?.recentActivity ?? []);
+const loading = useAppSelector((state) => state.dashboard.loading);
+const error = useAppSelector((state) => state.dashboard.error);
 
 if (loading) return <p>Loading...</p>;
 if (error) return <div className="text-red-500">{error}</div>;

@@ -13,13 +13,13 @@ const dispatch = useAppDispatch();
 const { user } = useAppSelector((state) => state.auth);
 const { loading, error } = useAppSelector((state) => state.dashboard);
 
-if (loading) return <div>Loading dashboard...</div>;
-if (error) return <div>Error: {error}</div>;
-
 useEffect(() => {
   if (!user) return;
   dispatch(fetchDashboardKPIs());
 }, [user]);
+
+if (loading) return <div>Loading dashboard...</div>;
+if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="space-y-6">

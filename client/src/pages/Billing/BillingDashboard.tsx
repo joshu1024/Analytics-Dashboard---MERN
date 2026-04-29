@@ -12,14 +12,15 @@ const BillingDashboard = () => {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.billing);
   const {user} = useAppSelector((state)=>state.auth)
-  if (loading) return <div>Loading billing data...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
- 
-
+  
   useEffect(() => {
     if(!user) return
     dispatch(billingPage());
   }, [user]);
+
+  if (loading) return <div>Loading billing data...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+  
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">Billing Dashboard</h2>

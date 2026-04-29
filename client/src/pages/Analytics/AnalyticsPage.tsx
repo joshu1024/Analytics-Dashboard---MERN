@@ -16,21 +16,19 @@ import { useAppDispatch } from "../../store/hooks";
 
 const AnalyticsPage = () => {
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.auth);
-  const { loading, error } = useAppSelector((state) => state.analytics);
+  const { user } = useAppSelector((state) => state.auth);const kpis = useAppSelector((state) => state.analytics.kpis);
+  const loading = useAppSelector((state) => state.analytics.loading);
+  const error = useAppSelector((state) => state.analytics.error);
 
-
-   useEffect(() => {
-    if (!user) return; 
-
+  useEffect(() => {
+    if (!user) return;
     dispatch(fetchKPIs());
     dispatch(fetchRetentionCurve());
     dispatch(fetchSignupsByCountry());
     dispatch(fetchUserDemographics());
-    dispatch(fetchEvents({page:1,limit:5}));
   }, [user]);
 
-  if (loading) return <div>Loading analytics...</div>;
+  if (loading && !kpis?.totalUsers) return <div>Loading analytics...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (

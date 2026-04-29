@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice,PayloadAction } from "@reduxjs/toolkit";
 import { KPI, RetentionCurvePoint, SignupByCountry, UserDemographics,Event, FetchEventsParams } from "../../types/analytics";
-import { Rootstate } from "../index.js";
 import {AnalyticsState} from "../../types/analytics.js"
 import api from "../../api/api.js";
 import { AxiosError } from "axios";
@@ -10,8 +9,7 @@ import { ErrorResponse } from "../../types/analytics";
 export const fetchKPIs = createAsyncThunk<KPI,void,{rejectValue:string}>(
   "analytics/fetchKpis",
   async (_, { rejectWithValue }) => {
-    
-    try {
+     try {
       const { data } = await api.get<KPI>("/analytics/kpis");
       return data;
     } catch (err) {
@@ -69,13 +67,13 @@ export const fetchEvents = createAsyncThunk<Event[],FetchEventsParams,{rejectVal
   },
 );
  const initialState:AnalyticsState ={
-   kpis: {
+    kpis: {
   totalUsers: 0,
   churn: 0,
   totalRevenue: 0,
   arpu: 0,
   retention: 0,
-},
+         },
     data: [] as RetentionCurvePoint[],
     data2: [],
     demographics: [],

@@ -10,12 +10,13 @@ const UsersPage = () => {
   const dispatch = useAppDispatch();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { loading, error ,users} = useAppSelector((state) => state.user);
-  if (loading && !users.length) return <div>Loading...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
-
+  
   useEffect(() => {
     dispatch(fetchUser({page:1,limit:5}));
   }, []);
+
+  if (loading && !users.length) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div>

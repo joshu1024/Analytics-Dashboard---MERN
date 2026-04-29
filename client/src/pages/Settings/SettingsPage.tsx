@@ -11,11 +11,12 @@ import { useAppSelector } from "../../store";
 const SettingsPage = () => {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.settings);
-  if (loading) return <div>Loading settings...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
   useEffect(() => {
     dispatch(fetchAllSettings());
   }, []);
+
+  if (loading) return <div>Loading settings...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
   return (
     <div className="space-y-6">
       <GeneralSettingsForm />

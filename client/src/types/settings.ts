@@ -5,7 +5,9 @@ export interface SmtpSettings{
 export interface UpdateSMTPPayload{
     host?:string
 }
-
+export interface ErrorResponse{
+  message:string
+}
 export interface UpdateBrandingPayload{
     companyName?:string
 }
@@ -26,6 +28,7 @@ export interface SettingsState {
   settings: Settings | null;
   loading: boolean;
   error: string | null | undefined;
+  message: string | null;
 }
 export interface SettingsResponse{
     settings:Settings | null

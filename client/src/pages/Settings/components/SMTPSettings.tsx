@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 import { UpdateSMTPSettings } from "../../../store/slices/settingsSlice.js";
-import { Rootstate } from "../../../store/index.js";
+import {  useAppSelector } from "../../../store/index.js";
 import { useAppDispatch } from "../../../store/hooks.js";
 
 const SMTPSettings = () => {
   const dispatch = useAppDispatch();
 
-  const { settings, loading } = useSelector((state:Rootstate) => state.settings);
+  const { settings, loading } = useAppSelector((state) => state.settings);
 
   const [host, setHost] = useState("");
 
-  // preload existing value
   useEffect(() => {
     if (settings?.smtp?.host) {
       setHost(settings.smtp.host);

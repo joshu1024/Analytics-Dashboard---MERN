@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 import { fetchUpdatedSettings } from "../../../store/slices/settingsSlice.js";
-import { Rootstate } from "../../../store/index.js";
+import {  useAppSelector } from "../../../store/index.js";
 import { useAppDispatch } from "../../../store/hooks.js";
 
 const GeneralSettingsForm = () => {
   const [companyName, setCompanyName] = useState("");
   const dispatch = useAppDispatch();
 
-  const { settings, loading, error } = useSelector((state:Rootstate) => state.settings);
+  const { settings, loading, error } = useAppSelector((state) => state.settings);
 
   useEffect(() => {
     if (settings) {
@@ -22,7 +21,7 @@ const GeneralSettingsForm = () => {
   }
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div className="text-red-500">Error</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="bg-white p-4 rounded shadow">

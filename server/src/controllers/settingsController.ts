@@ -1,14 +1,6 @@
-import Settings from "../models/Settings"
+import Settings, { ISettings } from "../models/Settings"
 import crypto from "crypto"
 import {Response,Request} from "express"
-import {Document} from "mongoose"
-
-export interface ISettings extends Document {
-  companyName?: string;
-  smtp?: { host?: string };
-  branding?: { companyName?: string };
-  apiKeys?: { keyHash: string }[];
-}
 
 interface UpdateGeneralSettingsBody {
   companyName: string;
@@ -21,10 +13,11 @@ interface UpdateSMTPBody {
 interface UpdateBrandingBody {
   companyName: string;
 }
-type UpdateBrandingResponse = ISettings | { message: string };
+type UpdateBrandingResponse = {settings:ISettings} | { message: string };
+
 export const getSettings = async (
   req: Request,
-  res: Response<{ settings: ISettings }>
+  res: Response<{ settings: ISettings }  | {message:string}>
 ): Promise<void> => {
   try {
     let settings = await Settings.findOne();
@@ -37,7 +30,7 @@ export const getSettings = async (
   } catch (err: unknown) {
     const message =
       err instanceof Error ? err.message : "Failed to fetch settings";
-    res.status(500).json({ settings: undefined as unknown as ISettings });
+    res.status(500).json({ message });
   }
 };
 export const updateGeneralSettings = async (
@@ -94,7 +87,7 @@ export const updateBranding = async (
       { new: true, upsert: true }
     );
 
-    res.json(settings);
+    res.json({settings});
   } catch (err: unknown) {
     const message =
       err instanceof Error ? err.message : "Failed to update branding";
@@ -111,7 +104,7 @@ export const generateApiKey = async (
 
     await Settings.findOneAndUpdate(
       {},
-      { $push: { apiKeys: { keyHash: hash } } },
+      { $push: { apiKeys: { keyHash: hash, createdAt: new Date() } } },
       { new: true, upsert: true }
     );
 

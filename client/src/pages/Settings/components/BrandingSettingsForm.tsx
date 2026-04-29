@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Rootstate } from "../../../store";
+import { useSelector } from "react-redux";
+import { Rootstate, useAppSelector } from "../../../store";
 import { useAppDispatch } from "../../../store/hooks";
 import { UpdateBrandingSettings } from "../../../store/slices/settingsSlice";
 
 export const BrandingSettingsForm = () => {
   const dispatch = useAppDispatch();
-  const { settings, loading } = useSelector((state:Rootstate) => state.settings);
+  const { settings, loading, error } = useAppSelector((state) => state.settings);
   const [companyName, setCompanyName] = useState("");
 
+  if (error) return <div className="text-red-500">{error}</div>;
+  
   useEffect(() => {
     if (settings?.branding?.companyName) {
       setCompanyName(settings.branding.companyName);

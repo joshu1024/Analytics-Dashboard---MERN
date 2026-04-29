@@ -93,7 +93,7 @@ const analyticsSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchKPIs.fulfilled, (state, action:PayloadAction<KPI>) => {
+      .addCase(fetchKPIs.fulfilled, (state, action) => {
        state.loading = false, state.kpis = action.payload;
       })
       .addCase(fetchKPIs.rejected, (state, action) => {
@@ -102,7 +102,7 @@ const analyticsSlice = createSlice({
       .addCase(fetchRetentionCurve.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchRetentionCurve.fulfilled, (state, action:PayloadAction<RetentionCurvePoint[]>) => {
+      .addCase(fetchRetentionCurve.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
       })

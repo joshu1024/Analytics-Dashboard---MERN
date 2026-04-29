@@ -19,8 +19,6 @@ const AnalyticsPage = () => {
   const { user } = useAppSelector((state) => state.auth);
   const { loading, error } = useAppSelector((state) => state.analytics);
 
-  if (loading) return <div>Loading analytics...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
 
    useEffect(() => {
     if (!user) return; 
@@ -29,8 +27,12 @@ const AnalyticsPage = () => {
     dispatch(fetchRetentionCurve());
     dispatch(fetchSignupsByCountry());
     dispatch(fetchUserDemographics());
-    dispatch(fetchEvents());
+    dispatch(fetchEvents({page:1,limit:5}));
   }, [user]);
+
+  if (loading) return <div>Loading analytics...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+
   return (
     <div className="space-y-6">
     <h2 className="text-xl mb-4">Analytics</h2>

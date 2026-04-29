@@ -40,7 +40,7 @@ export interface AnalyticsState {
   demographics: UserDemographics[];
   events: Event[];
   loading: boolean;
-  error: string | null;
+  error: string | null | undefined;
   mrr?: number;
 }
 export interface SignupByCountry {

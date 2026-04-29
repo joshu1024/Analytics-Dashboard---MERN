@@ -1,8 +1,8 @@
-import React from "react";
-import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { useAppSelector } from "../../store";
+import { useMemo } from "react";
 
-const pageTiles = {
+const pageTitles:Record<string,string> = {
   "/": "Dashboard",
   "/analytics": "Analytics",
   "/companies": "Companies",
@@ -11,14 +11,19 @@ const pageTiles = {
   "/settings": "Settings",
 };
 
+ 
 const Topbar = () => {
   const { pathname } = useLocation();
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
+  
+  const pageTitle = useMemo(() => 
+    pageTitles[pathname] || "Dashboard", 
+  [pathname]);
 
   return (
     <header className="h-16 bg-white border-b px-6 flex items-center justify-between">
       <h1 className="text-lg font-semibold">
-        {pageTiles[pathname] || "Dashboard"}
+        {pageTitle}
       </h1>
 
       <div className="flex items-center gap-4">

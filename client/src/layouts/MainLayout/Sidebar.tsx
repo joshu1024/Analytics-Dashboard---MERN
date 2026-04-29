@@ -1,22 +1,19 @@
-import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../store/slices/authSlice.js";
 import SidebarItem from "./SidebarItem.jsx";
-import api from "../../api/api.js";
+import { useAppDispatch } from "../../store/hooks.js";
 
 const Sidebar = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const linkClass = "block px-4 py-2 rounded hover:bg-gray-700 transition";
 
   const handleLogout = async () => {
     try {
-      await api.post("/auth/logout", {}, { withCredentials: true });
-
-      dispatch(logoutUser());
-
-      navigate("/login");
+      const result = await dispatch(logoutUser());
+      if (logoutUser.fulfilled.match(result)){
+        navigate("/login");
+      }
+      
     } catch (err) {
       console.error("Logout failed", err);
     }

@@ -1,6 +1,10 @@
+import { FC } from "react";
 import { NavLink } from "react-router-dom";
-
-const SidebarItem = ({ to, label }) => {
+interface Props {
+  to: string;
+  label: string;
+}
+const SidebarItem:FC<Props> = ({ to, label }) => {
   return (
     <NavLink
       to={to}

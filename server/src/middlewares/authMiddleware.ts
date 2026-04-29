@@ -32,6 +32,7 @@ export const protect = async (
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as IUserPayload
+    console.log(decoded)
     req.user = decoded; 
 
     next();

@@ -18,7 +18,7 @@ export const generateTokenAndSetCookie = (
       email: user.email,
     },
     process.env.JWT_SECRET,
-    { expiresIn: `${EXPIRY_DAYS}` }
+    { expiresIn: `${EXPIRY_DAYS}d` }
   );
 
   res.cookie("jwt", token, {

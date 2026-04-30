@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import {
   BarChart,
@@ -9,7 +8,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { Rootstate } from "../../../store";
+import { Rootstate, useAppSelector } from "../../../store";
 import { UserGrowthPoint } from "../../../types/dashboard";
 
 const COLORS = [
@@ -23,11 +22,12 @@ const COLORS = [
 ];
 
 const UserGrowthChart = () => {
-  const { kpis, loading ,error} = useSelector((state:Rootstate) => state.dashboard);
-  
- if (loading) return <div>Loading...</div>;
+  const { kpis, loading ,error} = useAppSelector((state) => state.dashboard);
+if (loading) return <div>Loading...</div>;
 if (error) return <div className="text-red-500">{error}</div>;
- const data:UserGrowthPoint[] = kpis?.userGrowthData ?? [];
+ const data:UserGrowthPoint[] = kpis?.userGrowth ?? [];
+ if (!data.length) return <div className="text-gray-400">No growth data available</div>;
+  
  return (
     <div className="bg-white  p-4 rounded shadow">
       <h3 className="">User Growth</h3>

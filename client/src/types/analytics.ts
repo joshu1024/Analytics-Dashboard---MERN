@@ -47,3 +47,9 @@ export interface SignupByCountry {
   _id: string;  
   count: number;
 }
+export interface EventsResponse {
+  events: Event[];
+  total: number;
+  page: number;
+  totalPages: number;
+}

@@ -5,7 +5,7 @@ import { useAppDispatch } from "../../../store/hooks";
 const EventTrackingTable = () => {
   const [page, setPage] = useState(1);
   const dispatch = useAppDispatch();
-  const { events, loading, error } = useAppSelector((state) => state.analytics);
+  const { events } = useAppSelector((state) => state.analytics ?? []);
 
   useEffect(() => {
     dispatch(fetchEvents({ page, limit: 10 }));
@@ -15,8 +15,23 @@ const EventTrackingTable = () => {
     <div className="bg-white p-4 rounded shadow">
       <h3 className="font-semibold mb-4">Event Tracking</h3>
       <table className="w-full text-sm">
-        ...
-      </table>
+      <thead>
+        <tr className="border-b">
+          <th className="text-left py-2">Event</th>
+          <th className="text-left py-2">User</th>
+          <th className="text-left py-2">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {events.map((event) => (
+          <tr key={event._id} className="border-b">
+            <td className="py-2">{event.type.replaceAll("_", " ")}</td>
+            <td>{event.user?.fullName || "System"}</td>
+            <td>{new Date(event.createdAt).toLocaleDateString()}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
 
       {/* Pagination controls */}
       <div className="flex justify-between mt-4">

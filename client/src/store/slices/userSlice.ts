@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 import { ErrorResponse } from "../../types/user";
 export const fetchUser = createAsyncThunk<UserResponse,{page:number,limit:number},{rejectValue:string}>(
   "user/kpi",
-  async ({page,limit}, { getState, rejectWithValue }) => {
+  async ({page,limit}, { rejectWithValue }) => {
    try {
     const {data} = await api.get<UserResponse>("/user",{params:{ page,limit}})
     return data

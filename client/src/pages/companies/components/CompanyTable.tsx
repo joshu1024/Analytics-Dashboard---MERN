@@ -12,6 +12,7 @@ const CompanyTable = ({ onSelectedCompany }:Props) => {
   );
     if (loading && companies.length === 0) return <div>Loading...</div>;
     if (error) return <div className="text-red-500">{error}</div>;
+    
       function handlePageChange(newPage:number) {
         dispatch(companiesPage(newPage));
       }

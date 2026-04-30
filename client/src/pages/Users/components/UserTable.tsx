@@ -19,7 +19,7 @@ const UserTable:FC<Props> = ({ onSelected }) => {
   } = useAppSelector((state) => state.user);
 
   function handleUserTable(page:number) {
-    dispatch(fetchUser({page:1,limit:5}));
+    dispatch(fetchUser({page,limit:5}));
   }
 
   if (error) return <p className="p-4 text-red-500">Error: {error}</p>;

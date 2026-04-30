@@ -6,7 +6,7 @@ export interface KPI {
   revenueChart: RevenuePoint[]
   recentActivity: RecentActivity[],
   planBreakDown: PlanBreakdown[],
-  userGrowthData: UserGrowthPoint[],
+  userGrowth: UserGrowthPoint[],
 }
 
 export interface DashboardState {

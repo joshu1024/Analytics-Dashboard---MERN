@@ -24,7 +24,7 @@ export const fetchDashboardKPIs = createAsyncThunk<KPI, void, { rejectValue: str
       revenueChart: [],
       recentActivity: [],
       planBreakDown: [],
-      userGrowthData: [],
+      userGrowth: [],
     },
     loading: false,
     error: null,

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice,PayloadAction } from "@reduxjs/toolkit";
-import { KPI, RetentionCurvePoint, SignupByCountry, UserDemographics,Event, FetchEventsParams } from "../../types/analytics";
+import { KPI, RetentionCurvePoint, SignupByCountry, UserDemographics,Event, FetchEventsParams, EventsResponse } from "../../types/analytics";
 import {AnalyticsState} from "../../types/analytics.js"
 import api from "../../api/api.js";
 import { AxiosError } from "axios";
@@ -58,8 +58,8 @@ export const fetchEvents = createAsyncThunk<Event[],FetchEventsParams,{rejectVal
   "analytics/fetchEvents",
  async ({ page, limit }, { rejectWithValue }) => {
    try {
-    const {data} = await api.get<Event[]>("/analytics/events",{params:{page,limit}});
-   return data
+    const {data} = await api.get<EventsResponse>("/analytics/events",{params:{page,limit}});
+   return data.events
    } catch (err) {
     const error = err as AxiosError<ErrorResponse>;
     return rejectWithValue(error.response?.data?.message || "Failed to load events")
@@ -68,11 +68,11 @@ export const fetchEvents = createAsyncThunk<Event[],FetchEventsParams,{rejectVal
 );
  const initialState:AnalyticsState ={
     kpis: {
-  totalUsers: 0,
-  churn: 0,
-  totalRevenue: 0,
-  arpu: 0,
-  retention: 0,
+      totalUsers: 0,
+      churn: 0,
+      totalRevenue: 0,
+      arpu: 0,
+      retention: 0,
          },
     data: [] as RetentionCurvePoint[],
     data2: [],
